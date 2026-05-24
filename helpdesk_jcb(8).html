@@ -1,0 +1,2536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jean-Claude Biguine — Help Desk</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;1,9..144,400&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e8f8f8;--s1:#ffffff;--s2:#f4fcfc;--s3:#eaf7f7;
+  --br:#c8e8e8;--br2:#b0d8d8;
+  --ink:#0d2b2b;--ink2:#1a4040;--muted:#5a8080;
+  --accent:#00b8b8;--accent2:#00a0a0;--accent-dim:rgba(0,184,184,0.08);--accent-glow:rgba(0,184,184,0.18);
+  --red:#c9333a;--red-bg:rgba(201,51,58,0.09);
+  --grn:#2d7d4f;--grn-bg:rgba(45,125,79,0.09);
+  --blu:#2c5fa3;--blu-bg:rgba(44,95,163,0.09);
+  --ylw:#a06b00;--ylw-bg:rgba(160,107,0,0.09);
+  --r:8px;--rl:12px;--sha:0 2px 12px rgba(0,0,0,0.07),0 1px 3px rgba(0,0,0,0.05);
+  --sha2:0 8px 32px rgba(0,184,184,0.15);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--ink);min-height:100vh;overflow-x:hidden;}
+
+/* ── LOGIN SCREEN ── */
+#login-screen{position:fixed;inset:0;background:linear-gradient(135deg,#d0f0f0 0%,#b8e8e8 40%,#c8f0f0 100%);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.login-box{background:var(--s1);border:1.5px solid rgba(0,184,184,0.18);border-radius:20px;padding:44px 40px;width:440px;box-shadow:0 16px 48px rgba(0,120,120,0.18),0 2px 8px rgba(0,0,0,0.08);}
+.login-logo-wrap{text-align:center;margin-bottom:28px;padding-bottom:24px;border-bottom:1px solid var(--br);}
+.login-logo-jc{font-family:'Fraunces',serif;font-size:10px;font-weight:600;letter-spacing:5px;color:var(--ink);text-transform:uppercase;display:block;}
+.login-logo-main{font-family:'Fraunces',serif;font-size:40px;font-weight:700;color:var(--ink);letter-spacing:-1px;line-height:1;display:block;}
+.login-logo-paris{font-size:10px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:6px;margin:3px 0;}
+.login-logo-paris::before,.login-logo-paris::after{content:'';flex:1;max-width:36px;height:1px;background:var(--br2);}
+.login-logo-sub{font-size:10px;letter-spacing:3px;color:var(--muted);text-transform:uppercase;margin-top:2px;}
+.login-logo{font-family:'Fraunces',serif;font-size:26px;font-weight:700;color:var(--accent);margin-bottom:4px;}
+.login-tagline{font-size:10.5px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:22px;text-align:center;}
+.login-label{font-size:10.5px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:1.2px;margin-bottom:6px;display:block;}
+.login-input{width:100%;background:#fff;border:1.5px solid #b8d8d8;color:var(--ink);padding:11px 14px;border-radius:8px;font-size:14px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:14px;}
+.login-input:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(0,184,184,0.12);}
+.login-btn{width:100%;background:var(--accent);color:#fff;padding:13px;border-radius:8px;font-size:14px;font-weight:700;border:none;cursor:pointer;font-family:'Outfit',sans-serif;transition:all .2s;margin-top:6px;letter-spacing:1.5px;text-transform:uppercase;}
+.login-btn:hover{background:var(--accent2);box-shadow:0 6px 20px rgba(0,184,184,0.35);transform:translateY(-1px);}
+.login-err{font-size:12px;color:var(--red);margin-top:8px;display:none;}
+.login-role-hint{font-size:11px;color:var(--muted);margin-top:16px;padding-top:16px;border-top:1px solid var(--br);line-height:1.6;}
+.login-pw-wrap{position:relative;margin-bottom:14px;}
+.login-pw-wrap .login-input{margin-bottom:0;padding-right:42px;}
+.pw-toggle{position:absolute;right:13px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;font-size:16px;color:var(--muted);line-height:1;padding:0;}
+.pw-toggle:hover{color:var(--accent);}
+.login-security{display:flex;justify-content:center;gap:12px;margin-top:18px;font-size:10px;color:var(--muted);align-items:center;}
+.login-security span{display:flex;align-items:center;gap:3px;}
+/* ── TOKEN LOGIN ── */
+.token-login-banner{background:linear-gradient(135deg,rgba(0,184,184,0.12),rgba(0,160,160,0.08));border:1.5px solid rgba(0,184,184,0.3);border-radius:10px;padding:16px 18px;margin-bottom:18px;text-align:center;display:none;}
+.token-login-banner.show{display:block;}
+.token-login-spinner{display:inline-block;width:20px;height:20px;border:2.5px solid rgba(0,184,184,0.3);border-top-color:var(--accent);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.token-login-ok{font-size:13px;color:var(--grn);font-weight:600;}
+.token-login-err{font-size:13px;color:var(--red);font-weight:600;}
+.token-divider{display:flex;align-items:center;gap:10px;margin:16px 0;font-size:10.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;}
+.token-divider::before,.token-divider::after{content:'';flex:1;height:1px;background:var(--br);}
+/* ── ADMIN TOKEN TABLE ── */
+.token-table{width:100%;border-collapse:collapse;font-size:12px;}
+.token-table th{padding:7px 10px;text-align:left;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:700;border-bottom:1px solid var(--br);background:var(--s3);}
+.token-table td{padding:8px 10px;border-bottom:1px solid var(--br);vertical-align:middle;}
+.token-copy-btn{background:var(--accent-dim);border:1px solid rgba(0,184,184,.3);color:var(--accent);border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;}
+.token-copy-btn:hover{background:var(--accent);color:#fff;}
+.token-gen-btn{background:var(--grn-bg);border:1px solid rgba(45,125,79,.3);color:var(--grn);border-radius:5px;padding:3px 9px;font-size:11px;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:600;}
+.token-gen-btn:hover{background:var(--grn);color:#fff;}
+/* ── FORCE CHANGE PASSWORD OVERLAY ── */
+#chpw-overlay{position:fixed;inset:0;background:rgba(26,23,20,.6);z-index:10000;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px);}
+#chpw-overlay.open{display:flex;}
+.chpw-box{background:var(--s1);border:1px solid var(--br);border-radius:16px;padding:36px 34px;width:400px;box-shadow:var(--sha2);}
+.chpw-icon{font-size:36px;margin-bottom:10px;}
+.chpw-title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:4px;}
+.chpw-sub{font-size:12.5px;color:var(--muted);margin-bottom:22px;line-height:1.5;}
+.chpw-notice{background:var(--ylw-bg);border:1px solid rgba(160,107,0,.25);border-radius:7px;padding:10px 13px;font-size:12px;color:var(--ylw);margin-bottom:18px;line-height:1.5;}
+.pw-strength{height:4px;border-radius:2px;margin-top:5px;transition:all .3s;background:var(--br);}
+.pw-strength-txt{font-size:10.5px;margin-top:4px;}
+/* ── FLOATING SAVE BUTTON ── */
+#tfb-fab:hover{background:var(--accent2);transform:translateY(-2px);box-shadow:0 10px 32px rgba(0,184,184,0.5);}
+#tfb-fab:active{transform:translateY(0);}
+.tfb-toggle-lbl{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);cursor:pointer;padding:5px 10px;border:1px solid var(--br);border-radius:6px;background:var(--s1);user-select:none;}
+.tfb-toggle-lbl:hover{border-color:var(--accent);color:var(--accent);}
+.tfb-toggle-lbl input{accent-color:var(--accent);width:14px;height:14px;}
+.tfb-type-item{padding:9px 12px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--ink2);margin-bottom:3px;display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px solid transparent;transition:all .15s;}
+.tfb-type-item:hover{background:var(--accent-dim);border-color:var(--br);}
+.tfb-type-item.active{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);font-weight:600;}
+.tfb-type-item .tfb-type-del{opacity:0;font-size:12px;padding:2px 5px;border-radius:4px;background:var(--red-bg);color:var(--red);border:none;cursor:pointer;}
+.tfb-type-item:hover .tfb-type-del{opacity:1;}
+.tfb-type-name{flex:1;outline:none;background:none;border:none;font-size:13px;color:inherit;font-family:'Outfit',sans-serif;font-weight:inherit;}
+.tfb-subj-row{display:grid;grid-template-columns:1fr 1fr 32px;gap:8px;align-items:start;padding:12px;border:1px solid var(--br);border-radius:8px;margin-bottom:8px;background:var(--s1);transition:border-color .15s;}
+.tfb-subj-row:hover{border-color:var(--br2);}
+.tfb-subj-row.tfb-subj-expanded{border-color:var(--accent);background:var(--accent-dim);}
+.tfb-field-chips{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px;}
+.tfb-chip{display:flex;align-items:center;gap:4px;background:var(--s2);border:1px solid var(--br);border-radius:20px;padding:3px 10px;font-size:11.5px;color:var(--ink2);}
+.tfb-chip-del{background:none;border:none;cursor:pointer;color:var(--muted);font-size:12px;padding:0;line-height:1;}
+.tfb-chip-del:hover{color:var(--red);}
+.tfb-add-field{display:flex;gap:6px;margin-top:8px;}
+.tfb-add-field input{flex:1;padding:6px 10px;border:1px solid var(--br);border-radius:6px;font-size:12px;outline:none;font-family:'Outfit',sans-serif;background:#fff;}
+.tfb-add-field input:focus{border-color:var(--accent);}
+.tfb-section-hd{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);margin:14px 0 8px;display:flex;align-items:center;justify-content:space-between;}
+.tfb-mandatory-chk{display:flex;align-items:center;gap:5px;font-size:11.5px;color:var(--muted);cursor:pointer;margin-top:6px;}
+.tfb-mandatory-chk input{accent-color:var(--accent);}
+.tfb-desc-field{width:100%;padding:8px 10px;border:1px solid var(--br);border-radius:6px;font-size:12.5px;font-family:'Outfit',sans-serif;outline:none;resize:vertical;min-height:60px;background:#fff;}
+.tfb-desc-field:focus{border-color:var(--accent);}
+.chpw-link:hover{color:var(--accent);}
+
+/* ── SIDEBAR ── */
+.sidebar{position:fixed;left:0;top:0;bottom:0;width:228px;background:var(--s1);border-right:1px solid var(--br);display:flex;flex-direction:column;z-index:100;box-shadow:1px 0 0 var(--br);}
+.logo-wrap{padding:22px 20px 18px;border-bottom:1px solid var(--br);}
+.logo-mark{font-family:'Fraunces',serif;font-size:19px;font-weight:700;color:var(--accent);letter-spacing:-.2px;}
+.logo-sub{font-size:9.5px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;margin-top:3px;}
+.nav-sec{font-size:9px;color:var(--muted);letter-spacing:2.5px;text-transform:uppercase;padding:16px 20px 5px;font-weight:600;}
+.nav-it{display:flex;align-items:center;gap:10px;padding:9px 20px;font-size:13px;color:var(--muted);cursor:pointer;transition:all .13s;border-left:2.5px solid transparent;user-select:none;font-weight:500;}
+.nav-it:hover{color:var(--ink2);background:var(--s2);}
+.nav-it.active{color:var(--accent);border-left-color:var(--accent);background:var(--accent-dim);font-weight:600;}
+.nav-badge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:20px;font-family:'DM Mono',monospace;}
+.sidebar-footer{margin-top:auto;padding:14px 20px;border-top:1px solid var(--br);}
+.user-chip{display:flex;align-items:center;gap:9px;}
+.user-avatar{width:30px;height:30px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+.user-name-txt{font-size:12.5px;font-weight:600;color:var(--ink2);}
+.user-role-txt{font-size:10.5px;color:var(--muted);}
+.logout-btn{margin-top:10px;font-size:11.5px;color:var(--muted);cursor:pointer;display:flex;align-items:center;gap:5px;}
+.logout-btn:hover{color:var(--red);}
+
+/* ── MAIN ── */
+.main{margin-left:228px;min-height:100vh;display:flex;flex-direction:column;}
+.topbar{padding:14px 26px;background:var(--s1);border-bottom:1px solid var(--br);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50;box-shadow:var(--sha);}
+.page-title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--ink);}
+.page-sub{font-size:11.5px;color:var(--muted);margin-top:1px;}
+.topbar-right{display:flex;gap:8px;align-items:center;}
+.content{padding:22px 26px;flex:1;}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;gap:6px;padding:8px 18px;border-radius:7px;font-size:13px;font-weight:600;cursor:pointer;font-family:'Outfit',sans-serif;border:none;transition:all .13s;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 4px 12px rgba(184,70,11,.25);}
+.btn-ghost{background:transparent;color:var(--ink2);border:1.5px solid var(--br2);}
+.btn-ghost:hover{border-color:var(--accent);color:var(--accent);}
+.btn-sm{padding:6px 13px;font-size:12px;}
+.btn-xs{padding:4px 9px;font-size:11px;}
+.btn:disabled{opacity:.4;cursor:not-allowed;transform:none!important;}
+
+/* ── CARDS ── */
+.card{background:var(--s1);border:1px solid var(--br);border-radius:var(--rl);padding:20px;box-shadow:var(--sha);}
+.card-hd{font-family:'Fraunces',serif;font-size:15px;font-weight:600;color:var(--ink);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;}
+
+/* ── STATS ── */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-bottom:20px;}
+.stat-card{background:var(--s1);border:1px solid var(--br);border-radius:var(--rl);padding:18px;position:relative;overflow:hidden;transition:transform .18s,box-shadow .18s;box-shadow:var(--sha);}
+.stat-card:hover{transform:translateY(-2px);box-shadow:var(--sha2);}
+.stat-card::after{content:'';position:absolute;top:0;left:0;right:0;height:3px;border-radius:var(--rl) var(--rl) 0 0;}
+.sc-all::after{background:linear-gradient(90deg,var(--accent),var(--accent2));}
+.sc-open::after{background:var(--red);}
+.sc-pend::after{background:var(--ylw);}
+.sc-done::after{background:var(--grn);}
+.stat-lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1.8px;font-weight:600;}
+.stat-val{font-family:'Fraunces',serif;font-size:40px;font-weight:700;line-height:1;margin:8px 0 3px;}
+.sc-all .stat-val{color:var(--accent);}
+.sc-open .stat-val{color:var(--red);}
+.sc-pend .stat-val{color:var(--ylw);}
+.sc-done .stat-val{color:var(--grn);}
+.stat-hint{font-size:11px;color:var(--muted);}
+
+/* ── TABLE ── */
+.table-wrap{background:var(--s1);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sha);}
+.table-hd{padding:13px 18px;border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;background:var(--s2);}
+.table-title{font-family:'Fraunces',serif;font-size:14px;font-weight:600;color:var(--ink);}
+.table-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead{background:var(--s3);}
+th{padding:9px 13px;text-align:left;font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1.2px;font-weight:700;white-space:nowrap;border-bottom:1px solid var(--br);}
+td{padding:10px 13px;font-size:12.5px;border-bottom:1px solid var(--br);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tbody tr{transition:background .1s;}
+tbody tr:hover td{background:var(--accent-dim);}
+.td-mono{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);}
+.td-bold{font-weight:600;color:var(--ink);}
+
+/* ── BADGES ── */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:10.5px;font-weight:600;white-space:nowrap;}
+.bdot{width:5px;height:5px;border-radius:50%;background:currentColor;flex-shrink:0;}
+.b-open{background:var(--red-bg);color:var(--red);}
+.b-pend{background:var(--ylw-bg);color:var(--ylw);}
+.b-res{background:var(--grn-bg);color:var(--grn);}
+.b-cat{background:var(--accent-dim);color:var(--accent);padding:2px 8px;border-radius:4px;font-size:10.5px;font-weight:500;border:1px solid rgba(184,70,11,.15);}
+.b-hi{background:var(--red-bg);color:var(--red);border:1px solid rgba(201,51,58,.2);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.b-med{background:var(--ylw-bg);color:var(--ylw);border:1px solid rgba(160,107,0,.2);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+.b-lo{background:var(--grn-bg);color:var(--grn);border:1px solid rgba(45,125,79,.2);padding:2px 8px;border-radius:4px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;}
+
+/* ── FILTERS ── */
+.filters-bar{display:flex;gap:9px;margin-bottom:13px;flex-wrap:wrap;align-items:center;background:var(--s1);border:1px solid var(--br);border-radius:var(--r);padding:10px 14px;box-shadow:var(--sha);}
+.fc{background:var(--s2);border:1.5px solid var(--br);color:var(--ink);padding:6px 10px;border-radius:6px;font-size:12.5px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .15s;}
+.fc:focus{border-color:var(--accent);}
+.fdiv{width:1px;height:20px;background:var(--br);flex-shrink:0;}
+
+/* ── FORM ── */
+.form-section{background:var(--s1);border-radius:var(--r);border:1px solid var(--br);padding:18px;margin-bottom:14px;box-shadow:var(--sha);}
+.fsect-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
+.fsect-title::after{content:'';flex:1;height:1px;background:var(--br);}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px;}
+.fg{display:flex;flex-direction:column;gap:4px;}
+.fg.full{grid-column:1/-1;}
+.flbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.req{color:var(--red);}
+.fc2{background:var(--s2);border:1.5px solid var(--br);color:var(--ink);padding:9px 12px;border-radius:7px;font-size:13px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .15s,box-shadow .15s;width:100%;}
+.fc2:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-dim);}
+.fc2::placeholder{color:#bab4ab;}
+textarea.fc2{resize:vertical;min-height:80px;line-height:1.55;}
+.fhint{font-size:10.5px;color:var(--muted);margin-top:3px;line-height:1.4;}
+.ferr{font-size:10.5px;color:var(--red);margin-top:3px;}
+
+/* ── AUTO-FILLED FIELD ── */
+.auto-field{background:var(--grn-bg);border:1.5px solid rgba(45,125,79,.25);color:var(--grn);padding:9px 12px;border-radius:7px;font-size:12.5px;font-weight:500;width:100%;display:flex;align-items:center;gap:6px;}
+.auto-icon{font-size:11px;}
+
+/* ── REQUIRED FIELDS BOX ── */
+.req-box{background:var(--s2);border:1.5px solid var(--br2);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+.req-box-title{font-size:10px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:700;margin-bottom:11px;display:flex;align-items:center;gap:6px;}
+.req-fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px;}
+.rfi{display:flex;flex-direction:column;gap:4px;}
+.rfi.full{grid-column:1/-1;}
+.rfi-lbl{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-weight:600;}
+.rfi-input{background:var(--s1);border:1.5px solid var(--br);color:var(--ink);padding:8px 11px;border-radius:6px;font-size:12.5px;font-family:'Outfit',sans-serif;outline:none;transition:border-color .15s;width:100%;}
+.rfi-input:focus{border-color:var(--accent);}
+.rfi-input::placeholder{color:#c0bab2;}
+.rfi-input[type="date"]{color:var(--ink);}
+
+/* ── FILE UPLOAD ── */
+.file-drop{border:2px dashed var(--br2);border-radius:8px;padding:18px;text-align:center;cursor:pointer;transition:all .18s;background:var(--s2);position:relative;}
+.file-drop:hover,.file-drop.drag{border-color:var(--accent);background:var(--accent-dim);}
+.file-drop input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;}
+.file-drop-icon{font-size:26px;margin-bottom:6px;}
+.file-drop-txt{font-size:12.5px;color:var(--muted);}
+.file-drop-txt strong{color:var(--accent);}
+.file-previews{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;}
+.file-thumb{position:relative;width:70px;height:70px;border-radius:6px;overflow:hidden;border:1px solid var(--br);background:var(--s3);}
+.file-thumb img{width:100%;height:100%;object-fit:cover;}
+.file-thumb .del-f{position:absolute;top:2px;right:2px;background:rgba(0,0,0,.55);color:#fff;border:none;border-radius:50%;width:18px;height:18px;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+.file-name-chip{display:inline-flex;align-items:center;gap:6px;background:var(--s1);border:1px solid var(--br);border-radius:5px;padding:4px 8px;font-size:11px;color:var(--ink2);}
+.file-name-chip .del-f{background:none;border:none;cursor:pointer;color:var(--muted);font-size:13px;line-height:1;padding:0;}
+
+/* ── ROUTING BOX ── */
+.routing-box{background:linear-gradient(135deg,rgba(184,70,11,.04),rgba(184,70,11,.01));border:1.5px solid rgba(184,70,11,.2);border-radius:var(--r);padding:14px;margin-bottom:14px;}
+.routing-title{font-size:9.5px;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-weight:700;margin-bottom:10px;}
+.routing-row{display:flex;align-items:flex-start;gap:9px;margin-bottom:8px;}
+.routing-row:last-child{margin-bottom:0;}
+.rlbl{font-size:10px;color:var(--muted);font-weight:700;width:22px;flex-shrink:0;padding-top:7px;text-transform:uppercase;letter-spacing:.3px;}
+.rpills{display:flex;flex-wrap:wrap;gap:5px;flex:1;}
+.rpill{display:inline-flex;align-items:center;gap:5px;border-radius:20px;padding:4px 11px;font-size:11.5px;font-weight:500;}
+.rpill.to{background:var(--red-bg);color:var(--red);border:1px solid rgba(201,51,58,.2);}
+.rpill.cc{background:var(--blu-bg);color:var(--blu);border:1px solid rgba(44,95,163,.2);}
+.rpill-inp{background:var(--s2);border:1.5px dashed var(--br2);color:var(--ink);padding:4px 10px;border-radius:20px;font-size:11.5px;font-family:'Outfit',sans-serif;outline:none;width:180px;}
+.rpill-inp:focus{border-color:var(--accent);}
+
+/* ── MODAL ── */
+.overlay{position:fixed;inset:0;background:rgba(26,23,20,.45);z-index:200;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(4px);opacity:0;pointer-events:none;transition:opacity .2s;}
+.overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--s1);border:1px solid var(--br);border-radius:14px;width:620px;max-width:96vw;max-height:92vh;overflow-y:auto;padding:28px;box-shadow:var(--sha2);transform:translateY(14px);transition:transform .2s;}
+.overlay.open .modal{transform:translateY(0);}
+.modal-title{font-family:'Fraunces',serif;font-size:20px;font-weight:600;color:var(--ink);margin-bottom:3px;}
+.modal-sub{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.modal-footer{display:flex;gap:9px;justify-content:flex-end;margin-top:18px;padding-top:14px;border-top:1px solid var(--br);}
+
+/* ── FOLLOW-UP ── */
+.fu-layout{display:grid;grid-template-columns:300px 1fr;gap:14px;}
+.fu-list-wrap{background:var(--s1);border:1px solid var(--br);border-radius:var(--rl);overflow:hidden;max-height:78vh;display:flex;flex-direction:column;box-shadow:var(--sha);}
+.fu-list-hd{padding:12px 15px;border-bottom:1px solid var(--br);font-family:'Fraunces',serif;font-size:14px;font-weight:600;background:var(--s2);}
+.fu-list-scroll{overflow-y:auto;flex:1;}
+.fu-it{padding:11px 15px;border-bottom:1px solid var(--br);cursor:pointer;transition:background .1s;}
+.fu-it:hover{background:var(--s2);}
+.fu-it.sel{background:var(--accent-dim);border-left:2.5px solid var(--accent);}
+.fu-it-id{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);}
+.fu-it-name{font-size:13px;font-weight:600;margin:2px 0;color:var(--ink);}
+.fu-it-meta{font-size:11px;color:var(--muted);}
+.detail-pane{background:var(--s1);border:1px solid var(--br);border-radius:var(--rl);padding:20px;overflow-y:auto;max-height:78vh;box-shadow:var(--sha);}
+.dm-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;}
+.dml{font-size:9.5px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:3px;}
+.dmv{font-size:13px;color:var(--ink2);font-weight:500;}
+.sum-box{background:var(--s2);border:1px solid var(--br);border-radius:7px;padding:12px;font-size:13px;color:var(--ink2);line-height:1.6;margin-bottom:14px;}
+.tl-item{display:flex;gap:10px;margin-bottom:12px;}
+.tl-dot{width:8px;height:8px;border-radius:50%;background:var(--accent);margin-top:4px;flex-shrink:0;}
+.tl-body{flex:1;}
+.tl-meta{font-size:10.5px;color:var(--muted);margin-bottom:3px;}
+.tl-text{font-size:12.5px;background:var(--s2);border:1px solid var(--br);padding:8px 11px;border-radius:7px;line-height:1.5;white-space:pre-wrap;color:var(--ink2);}
+.divider{height:1px;background:var(--br);margin:14px 0;}
+
+/* ── TABS ── */
+.tabs{display:flex;gap:0;padding:0 26px;background:var(--s1);border-bottom:1px solid var(--br);}
+.tab{padding:10px 15px;font-size:13px;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .13s;user-select:none;font-weight:500;}
+.tab:hover{color:var(--ink2);}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600;}
+
+/* ── ADMIN ── */
+.cust-table-wrap{overflow-x:auto;border-radius:var(--r);border:1px solid var(--br);margin-bottom:4px;}
+.cust-table{width:100%;border-collapse:collapse;font-size:12.5px;}
+.cust-table th{background:var(--s3);padding:8px 12px;text-align:left;font-size:9px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;border-bottom:1px solid var(--br);}
+.cust-table td{padding:9px 12px;border-bottom:1px solid var(--br);vertical-align:top;}
+.cust-table tr:last-child td{border-bottom:none;}
+.cust-table tbody tr:hover td{background:var(--s2);}
+.cust-table input,.cust-table select,.cust-table textarea{background:var(--s2);border:1.5px solid var(--br);color:var(--ink);padding:5px 9px;border-radius:5px;font-size:12px;font-family:'Outfit',sans-serif;outline:none;width:100%;}
+.cust-table input:focus,.cust-table select:focus{border-color:var(--accent);}
+.cust-table textarea{min-height:50px;resize:vertical;}
+.del-btn{background:none;border:none;cursor:pointer;color:var(--muted);font-size:15px;padding:2px 5px;border-radius:4px;transition:color .12s;}
+.del-btn:hover{color:var(--red);}
+.tag-chip{display:inline-flex;align-items:center;gap:5px;background:var(--s2);border:1px solid var(--br);border-radius:5px;padding:4px 10px;font-size:12px;color:var(--ink2);margin:3px;}
+.tag-chip .tc-rm{cursor:pointer;color:var(--muted);font-size:14px;}
+.tag-chip .tc-rm:hover{color:var(--red);}
+
+/* ── MISC ── */
+.hidden{display:none!important;}
+.spinner{display:inline-block;width:13px;height:13px;border:2px solid var(--br);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty-state{text-align:center;padding:44px 24px;color:var(--muted);}
+.empty-icon{font-size:38px;margin-bottom:10px;}
+.empty-text{font-size:13.5px;}
+.toast{position:fixed;bottom:20px;right:20px;background:var(--s1);border-radius:9px;padding:12px 18px;font-size:13px;z-index:9999;box-shadow:var(--sha2);display:flex;align-items:center;gap:10px;max-width:320px;transform:translateY(70px);opacity:0;transition:all .26s;pointer-events:none;border:1px solid var(--br);}
+.toast.show{transform:translateY(0);opacity:1;}
+.toast.ok{border-left:3px solid var(--grn);}
+.toast.err{border-left:3px solid var(--red);}
+.toast.inf{border-left:3px solid var(--accent);}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--br2);border-radius:3px;}
+.waiting-ok{color:var(--grn);font-weight:600;font-size:11.5px;}
+.waiting-warn{color:var(--ylw);font-weight:600;font-size:11.5px;}
+.waiting-crit{color:var(--red);font-weight:600;font-size:11.5px;}
+.role-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 7px;border-radius:4px;}
+.rb-admin{background:rgba(0,184,184,0.12);color:var(--accent);}
+.rb-nsh{background:rgba(0,120,120,0.1);color:var(--accent2);}
+.rb-am{background:var(--blu-bg);color:var(--blu);}
+.rb-salon{background:var(--grn-bg);color:var(--grn);}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo-wrap">
+      <span class="login-logo-jc">Jean · Claude</span>
+      <span class="login-logo-main">BIGUINE</span>
+      <div class="login-logo-paris"><span>Paris</span></div>
+      <span class="login-logo-sub">Salon &amp; Spa</span>
+    </div>
+    <div class="login-tagline">Help Desk Portal</div>
+
+    <!-- Token/Link Login Status Banner -->
+    <div id="token-banner" class="token-login-banner">
+      <span class="token-login-spinner" id="token-spinner"></span>
+      <span id="token-msg" style="font-size:13px;color:var(--muted)">Verifying your login link…</span>
+    </div>
+    <div id="token-divider" class="token-divider" style="display:none">or sign in manually</div>
+
+    <label class="login-label">Username</label>
+    <input class="login-input" type="text" id="login-username" placeholder="Enter your username" autocomplete="username" onkeydown="if(event.key==='Enter')document.getElementById('login-pw').focus()">
+
+    <label class="login-label" style="margin-top:4px">Password</label>
+    <div class="login-pw-wrap">
+      <input class="login-input" type="password" id="login-pw" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <button class="pw-toggle" type="button" onclick="togglePw('login-pw',this)" tabindex="-1">👁</button>
+    </div>
+
+    <div class="login-err" id="login-err">Incorrect username or password.</div>
+    <button class="login-btn" onclick="doLogin()">Sign In →</button>
+
+    <!-- Reset link — clears stored passwords so default works again -->
+    <div style="text-align:center;margin-top:10px">
+      <span onclick="resetMyPassword()" style="font-size:11.5px;color:var(--muted);cursor:pointer;text-decoration:underline;text-underline-offset:2px;">🔑 Forgot password / Reset to default</span>
+    </div>
+
+    <div class="login-security">
+      <span>🔒 Encrypted</span>
+      <span>·</span>
+      <span>Session-protected</span>
+      <span>·</span>
+      <span>Audit-logged</span>
+    </div>
+
+    <div class="login-role-hint">
+      Use the username provided by your administrator.<br>
+      Default password: <strong style="color:var(--accent);font-family:'DM Mono',monospace">helpdesk@123</strong><br>
+      You will be prompted to set a new password on first sign-in.
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FORCE CHANGE PASSWORD OVERLAY ═══ -->
+<div id="chpw-overlay">
+  <div class="chpw-box">
+    <div class="chpw-icon">🔐</div>
+    <div class="chpw-title">Set Your Password</div>
+    <div class="chpw-sub">You're using the default password. Please set a new personal password to continue.</div>
+    <div class="chpw-notice">⚠️ This is required before you can access the Help Desk. Your password must be at least 8 characters and different from the default.</div>
+
+    <label class="login-label">New Password</label>
+    <div class="login-pw-wrap" style="margin-bottom:10px">
+      <input class="login-input" type="password" id="cpw-new" placeholder="Min 8 characters" oninput="checkStrength()" style="margin-bottom:0;padding-right:42px">
+      <button class="pw-toggle" type="button" onclick="togglePw('cpw-new',this)" tabindex="-1">👁</button>
+    </div>
+    <div class="pw-strength" id="pw-strength-bar"></div>
+    <div class="pw-strength-txt" id="pw-strength-txt" style="color:var(--muted)"></div>
+
+    <label class="login-label" style="margin-top:14px">Confirm New Password</label>
+    <div class="login-pw-wrap">
+      <input class="login-input" type="password" id="cpw-confirm" placeholder="Re-enter new password" onkeydown="if(event.key==='Enter')saveNewPw()" style="margin-bottom:0;padding-right:42px">
+      <button class="pw-toggle" type="button" onclick="togglePw('cpw-confirm',this)" tabindex="-1">👁</button>
+    </div>
+
+    <div class="login-err" id="chpw-err" style="margin-bottom:10px">Passwords do not match.</div>
+    <button class="login-btn" style="margin-top:14px" onclick="saveNewPw()">Set Password &amp; Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ SIDEBAR ═══ -->
+<div class="sidebar hidden" id="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-mark" style="font-size:17px;letter-spacing:-.5px;">BIGUINE</div>
+    <div class="logo-sub">Help Desk CMS</div>
+  </div>
+  <div class="nav-sec">Overview</div>
+  <div class="nav-it active" data-view="dashboard" onclick="goTo('dashboard')">📊 Dashboard</div>
+  <div class="nav-sec">Tickets</div>
+  <div class="nav-it" data-view="tickets" onclick="goTo('tickets')">🎫 All Tickets <span class="nav-badge" id="open-badge">0</span></div>
+  <div class="nav-it" data-view="new-ticket" onclick="goTo('new-ticket')">＋ Raise Ticket</div>
+  <div class="nav-it" data-view="followup" onclick="goTo('followup')">🔁 Follow-Up</div>
+  <div class="nav-it admin-only hidden" data-view="admin" onclick="goTo('admin')">⚙ Admin</div>
+  <div class="sidebar-footer">
+    <div class="user-chip">
+      <div class="user-avatar" id="ua">?</div>
+      <div>
+        <div class="user-name-txt" id="u-name">—</div>
+        <div class="user-role-txt" id="u-role">—</div>
+      </div>
+    </div>
+    <div class="logout-btn" onclick="doLogout()">↩ Log out</div>
+    <div class="chpw-link" onclick="openChangePw()">🔑 Change Password</div>
+  </div>
+</div>
+
+<!-- ═══ MAIN ═══ -->
+<div class="main hidden" id="main-app">
+  <div class="topbar">
+    <div>
+      <div class="page-title" id="page-title">Dashboard</div>
+      <div class="page-sub" id="page-sub">Jean-Claude Biguine Help Desk</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost btn-sm" onclick="exportCSV()">⬇ Export CSV</button>
+      <button class="btn btn-ghost btn-sm" onclick="refreshAll()">⟳ Refresh</button>
+      <button class="btn btn-primary btn-sm" onclick="goTo('new-ticket')">＋ Raise Ticket</button>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" data-tab="dashboard" onclick="goTo('dashboard')">Overview</div>
+    <div class="tab" data-tab="tickets" onclick="goTo('tickets')">Tickets</div>
+    <div class="tab" data-tab="new-ticket" onclick="goTo('new-ticket')">＋ Raise</div>
+    <div class="tab" data-tab="followup" onclick="goTo('followup')">Follow-Up</div>
+    <div class="tab admin-only hidden" data-tab="admin" onclick="goTo('admin')">⚙ Admin</div>
+  </div>
+
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard">
+      <div class="stats-grid">
+        <div class="stat-card sc-all"><div class="stat-lbl">Total</div><div class="stat-val" id="st-total">0</div><div class="stat-hint">All tickets</div></div>
+        <div class="stat-card sc-open"><div class="stat-lbl">Open</div><div class="stat-val" id="st-open">0</div><div class="stat-hint">Needs action</div></div>
+        <div class="stat-card sc-pend"><div class="stat-lbl">Pending</div><div class="stat-val" id="st-pend">0</div><div class="stat-hint">In progress</div></div>
+        <div class="stat-card sc-done"><div class="stat-lbl">Resolved</div><div class="stat-val" id="st-done">0</div><div class="stat-hint">Closed</div></div>
+      </div>
+      <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:14px;margin-bottom:18px;">
+        <div class="card"><div class="card-hd">Tickets by Subject Type</div><div id="cat-chart"></div></div>
+        <div class="card"><div class="card-hd">Status Breakdown</div><div id="status-chart"></div></div>
+      </div>
+      <div class="table-wrap">
+        <div class="table-hd"><div class="table-title">Recent Tickets</div><button class="btn btn-ghost btn-xs" onclick="goTo('tickets')">View All →</button></div>
+        <div class="table-scroll"><table><thead><tr><th>#</th><th>Center</th><th>Subject Type</th><th>Subject</th><th>Priority</th><th>⏳ Waiting</th><th>Status</th></tr></thead><tbody id="recent-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- ALL TICKETS -->
+    <div id="view-tickets" class="hidden">
+      <div class="filters-bar">
+        <select class="fc" id="f-st" onchange="applyF()"><option value="">All Subject Types</option></select>
+        <div class="fdiv"></div>
+        <select class="fc" id="f-status" onchange="applyF()"><option value="">All Status</option><option>Open</option><option>Pending</option><option>Resolved</option></select>
+        <div class="fdiv"></div>
+        <select class="fc" id="f-prio" onchange="applyF()"><option value="">All Priority</option><option>High</option><option>Medium</option><option>Low</option></select>
+        <div class="fdiv"></div>
+        <input class="fc" style="width:190px" id="f-q" placeholder="🔍 Search…" oninput="applyF()">
+        <button class="btn btn-ghost btn-xs" onclick="clearF()">Clear</button>
+        <span id="tickets-count" style="font-size:11.5px;color:var(--muted);margin-left:auto"></span>
+      </div>
+      <div class="table-wrap">
+        <div class="table-hd"><div class="table-title">All Tickets</div></div>
+        <div class="table-scroll"><table><thead><tr>
+          <th>#</th><th>Date</th><th>Center</th><th>Subject Type</th><th>Subject</th>
+          <th>Raised By</th><th>Prio</th><th>⏳ Waiting</th><th>📅 Expected</th><th>TO</th><th>Status</th><th>Action</th>
+        </tr></thead><tbody id="tickets-tbody"></tbody></table></div>
+      </div>
+    </div>
+
+    <!-- NEW TICKET -->
+    <div id="view-new-ticket" class="hidden">
+      <div style="max-width:780px">
+
+        <div class="form-section">
+          <div class="fsect-title">📍 Basic Information</div>
+          <div class="form-grid">
+            <div class="fg">
+              <label class="flbl">Center / Salon <span class="req">*</span></label>
+              <select class="fc2" id="nf-center" onchange="onCenterChange()"><option value="">Select Center</option></select>
+            </div>
+            <div class="fg">
+              <label class="flbl">Date Raised <span class="req">*</span></label>
+              <input class="fc2" id="nf-date" type="date">
+            </div>
+            <div class="fg">
+              <label class="flbl">Raised By <span class="req">*</span></label>
+              <input class="fc2" id="nf-raised-by" placeholder="Your name / role">
+            </div>
+            <div class="fg">
+              <label class="flbl">Priority <span class="req">*</span></label>
+              <select class="fc2" id="nf-priority"><option>High</option><option selected>Medium</option><option>Low</option></select>
+            </div>
+            <div class="fg">
+              <label class="flbl">⏳ Waiting Since <span class="req">*</span></label>
+              <input class="fc2" id="nf-wait" type="date">
+              <div class="fhint">Date this issue has been pending</div>
+            </div>
+            <div class="fg">
+              <label class="flbl">📅 Expected Resolution Date</label>
+              <input class="fc2" id="nf-exp" type="date">
+            </div>
+          </div>
+        </div>
+
+        <!-- Auto-filled salon info -->
+        <div id="salon-info-box" class="form-section hidden">
+          <div class="fsect-title">🏢 Salon Details — Auto-filled</div>
+          <div class="form-grid">
+            <div class="fg"><label class="flbl">NSH</label><div class="auto-field" id="af-nsh"><span class="auto-icon">✓</span><span id="af-nsh-v">—</span></div></div>
+            <div class="fg"><label class="flbl">NSH Email</label><div class="auto-field" id="af-nsh-e"><span class="auto-icon">✓</span><span id="af-nsh-e-v">—</span></div></div>
+            <div class="fg"><label class="flbl">Area Manager</label><div class="auto-field"><span class="auto-icon">✓</span><span id="af-am-v">—</span></div></div>
+            <div class="fg"><label class="flbl">AM Email</label><div class="auto-field"><span class="auto-icon">✓</span><span id="af-am-e-v">—</span></div></div>
+            <div class="fg"><label class="flbl">Salon Email</label><div class="auto-field"><span class="auto-icon">✓</span><span id="af-salon-e-v">—</span></div></div>
+            <div class="fg"><label class="flbl">Brand / City</label><div class="auto-field"><span class="auto-icon">✓</span><span id="af-brand-v">—</span></div></div>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="fsect-title">🏷️ Subject Classification</div>
+          <div class="form-grid">
+            <div class="fg">
+              <label class="flbl">Subject Type <span class="req">*</span></label>
+              <select class="fc2" id="nf-subtype" onchange="onSubtypeChange()"><option value="">Select Subject Type</option></select>
+            </div>
+            <div class="fg">
+              <label class="flbl">Subject <span class="req">*</span></label>
+              <select class="fc2" id="nf-subject" onchange="onSubjectChange()"><option value="">— Select Type First —</option></select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dynamic fields -->
+        <div id="req-fields-wrap" class="hidden">
+          <div class="req-box">
+            <div class="req-box-title">📋 Required Fields for this Subject</div>
+            <div class="req-fields-grid" id="req-fields-grid"></div>
+          </div>
+        </div>
+
+        <!-- Email routing -->
+        <div class="routing-box" id="routing-box">
+          <div class="routing-title">📧 Email Routing</div>
+          <div class="routing-row">
+            <div class="rlbl" style="color:var(--red)">TO</div>
+            <div class="rpills" id="to-pills"></div>
+          </div>
+          <div class="routing-row">
+            <div class="rlbl" style="color:var(--blu)">CC</div>
+            <div class="rpills" id="cc-pills"></div>
+          </div>
+          <div style="font-size:10.5px;color:var(--muted);margin-top:8px;line-height:1.5;">TO: NSH &amp; AM · CC: CEO, AM &amp; IT Resolver · BCC: Admin (all configured in Admin → Email Config)</div>
+        </div>
+
+        <div class="form-section">
+          <div class="fsect-title">📝 Description &amp; Attachments</div>
+          <div class="form-grid">
+            <div class="fg full">
+              <label class="flbl">Issue Description <span class="req">*</span></label>
+              <textarea class="fc2" id="nf-desc" rows="4" placeholder="Describe the issue in full detail…"></textarea>
+            </div>
+            <div class="fg full">
+              <label class="flbl">Screenshots / Attachments</label>
+              <div class="file-drop" id="file-drop-zone">
+                <input type="file" id="file-input" multiple accept="image/*,.pdf,.doc,.docx,.xlsx" onchange="handleFiles(this.files)">
+                <div class="file-drop-icon">📎</div>
+                <div class="file-drop-txt">Drag &amp; drop files here or <strong>click to browse</strong></div>
+                <div class="file-drop-txt" style="font-size:11px;margin-top:3px;">Images, PDF, Word, Excel — max 5MB each</div>
+              </div>
+              <div class="file-previews" id="file-previews"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;gap:9px;justify-content:flex-end;padding-bottom:30px">
+          <button class="btn btn-ghost" onclick="resetForm()">Clear</button>
+          <button class="btn btn-primary" onclick="submitTicket()">Submit Ticket →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- FOLLOW-UP -->
+    <div id="view-followup" class="hidden">
+      <div class="fu-layout">
+        <div class="fu-list-wrap">
+          <div class="fu-list-hd">Open / Pending <span id="fu-count" style="font-size:11px;color:var(--muted);font-weight:400"></span></div>
+          <div style="padding:8px 12px;border-bottom:1px solid var(--br);"><input class="fc" style="width:100%" placeholder="🔍 Search…" oninput="filterFu(this.value)"></div>
+          <div class="fu-list-scroll" id="fu-list"></div>
+        </div>
+        <div class="detail-pane" id="fu-detail"><div class="empty-state"><div class="empty-icon">👈</div><div class="empty-text">Select a ticket from the left to update it.</div></div></div>
+      </div>
+    </div>
+
+    <!-- ADMIN (NSH only) -->
+    <div id="view-admin" class="hidden">
+
+      <!-- ── PUSH ALL TO SHEET ── -->
+      <div style="margin-bottom:16px;padding:14px 18px;background:linear-gradient(135deg,rgba(0,184,184,0.08),rgba(0,160,160,0.05));border:1.5px solid rgba(0,184,184,0.25);border-radius:12px;">
+
+        <!-- Apps Script URL config -->
+        <div style="margin-bottom:14px;padding:12px 14px;background:var(--s1);border:1px solid var(--br);border-radius:8px;">
+          <div style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px">⚙️ Apps Script URL (paste your new URL here)</div>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <input id="cfg-script-url" class="fc2" style="flex:1;min-width:300px;font-family:'DM Mono',monospace;font-size:11px" placeholder="https://script.google.com/macros/s/YOUR_NEW_ID/exec">
+            <button class="btn btn-ghost btn-sm" onclick="saveScriptUrl()">💾 Save URL</button>
+            <button class="btn btn-ghost btn-sm" onclick="testSheetConnection()">🔌 Test Connection</button>
+          </div>
+          <div style="font-size:10.5px;color:var(--red);margin-top:8px;line-height:1.6">
+            ⚠️ <strong>Your current URL has <code>/a/macros/biguineindia.com/</code> — this is domain-locked and will NOT work from external pages.</strong><br>
+            You must create a NEW deployment in Apps Script → the new URL will have <code>/macros/s/</code> (without the domain part). See instructions below.
+          </div>
+          <details style="margin-top:10px">
+            <summary style="font-size:11.5px;color:var(--accent);cursor:pointer;font-weight:600">📋 How to get the correct URL — click to expand</summary>
+            <div style="font-size:12px;color:var(--ink2);line-height:1.9;margin-top:10px;padding:10px;background:var(--s2);border-radius:6px">
+              1. Open Google Sheet → <strong>Extensions → Apps Script</strong><br>
+              2. Click <strong>Deploy → New Deployment</strong> (not "Manage Deployments")<br>
+              3. Click ⚙️ gear icon → select <strong>Web App</strong><br>
+              4. Description: <code>HelpDesk v3</code><br>
+              5. Execute as: <strong>Me</strong><br>
+              6. Who has access: <strong>Anyone</strong> ← (NOT "Anyone in biguineindia.com")<br>
+              7. Click <strong>Deploy</strong> → copy the URL shown<br>
+              8. The URL should look like: <code>https://script.google.com/macros/s/ABC.../exec</code><br>
+              &nbsp;&nbsp;&nbsp;(no <code>/a/</code> or domain name in it)<br>
+              9. Paste that URL above → Save URL → Test Connection
+            </div>
+          </details>
+        </div>
+
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px">
+          <div>
+            <div style="font-size:13px;font-weight:700;color:var(--ink)">📤 Push All Data to Google Sheet</div>
+            <div style="font-size:11.5px;color:var(--muted);margin-top:2px">First time setup — push your Salons, Users, Tickets and Tokens to Sheet in one click</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn btn-primary" onclick="pushAllToSheet()" style="font-size:12px">⚡ Push Everything to Sheet Now</button>
+            <button class="btn btn-ghost btn-sm" onclick="pullAllFromSheet()">↓ Pull Everything from Sheet</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── LOGIN LINKS (TOKENS) SECTION ── -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hd">🔗 Login Links (Magic Links)
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-primary btn-sm" onclick="generateAllTokens()">⚡ Generate Links for All Users</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadTokensFromSheet()">↓ Sync from Sheet</button>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:var(--accent-dim);border:1px solid rgba(0,184,184,.2);border-radius:6px;">
+          🔗 Each user gets a permanent link they can bookmark or save in WhatsApp. Share the link — they click it and are automatically logged in. Links never expire unless you regenerate them.
+          <br><strong style="color:var(--ink)">Base URL:</strong> <span id="token-base-url-display" style="font-family:'DM Mono',monospace;font-size:11px;color:var(--accent)"></span>
+        </div>
+        <div class="cust-table-wrap">
+          <table class="token-table">
+            <thead><tr>
+              <th>User</th><th>Role</th><th>Username</th><th>Token</th><th>Login Link</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="token-master-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── USERS TABLE ── -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hd">👤 User Accounts
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="addUserRow()">＋ Add User</button>
+            <button class="btn btn-primary btn-sm" onclick="saveUsers()">💾 Save Users</button>
+            <button class="btn btn-ghost btn-sm" onclick="loadUsersFromSheets()">↓ Sync from Sheet</button>
+          </div>
+        </div>
+        <div style="font-size:11.5px;color:var(--muted);margin-bottom:10px;padding:8px 12px;background:var(--ylw-bg);border:1px solid rgba(160,107,0,.2);border-radius:6px;">
+          ⚠️ Passwords are visible here for admin reference. Usernames are lowercase, no spaces (e.g. <code>varun</code>, <code>sandeep</code>). Roles: <strong>admin</strong> · <strong>nsh</strong> · <strong>am</strong> · <strong>it</strong> · <strong>salon</strong>
+        </div>
+        <div class="cust-table-wrap">
+          <table class="cust-table">
+            <thead><tr>
+              <th>Username</th><th>Full Name</th><th>Email</th><th>Role</th><th>Zone / Region</th><th>Current Password</th><th></th>
+            </tr></thead>
+            <tbody id="users-master-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Master Salon Table -->
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-hd">🏢 Master Salon Data
+          <div style="display:flex;gap:8px">
+            <button class="btn btn-ghost btn-sm" onclick="addSalonRow()">＋ Add Salon</button>
+            <button class="btn btn-primary btn-sm" onclick="saveMaster()">💾 Save Master</button>
+            <button class="btn btn-ghost btn-sm" onclick="pushSalonsToSheet()">↑ Push to Sheet</button>
+          </div>
+        </div>
+        <div class="cust-table-wrap">
+          <table class="cust-table">
+            <thead><tr>
+              <th>Salon Name</th><th>Display Name</th><th>Brand</th><th>Sub-Company</th>
+              <th>City</th><th>Zone</th><th>NSH</th><th>AM</th>
+              <th>Salon Email</th><th>AM Email</th><th>NSH Email</th><th>HR</th><th></th>
+            </tr></thead>
+            <tbody id="salon-master-body"></tbody>
+          </table>
+        </div>
+      </div>
+
+
+
+      <!-- ══ TICKET FORM BUILDER ══ -->
+      <div class="card" id="tfb-card" style="position:relative">
+        <!-- Sticky header -->
+        <div class="card-hd" style="position:sticky;top:0;z-index:10;background:var(--s1);border-bottom:1px solid var(--br);margin:-1px -1px 0;padding:12px 18px;border-radius:var(--rl) var(--rl) 0 0">
+          🎨 Ticket Form Builder
+          <div style="display:flex;gap:8px;align-items:center">
+            <span style="font-size:11px;color:var(--muted);font-weight:400">Admin-only · changes apply instantly to Raise Ticket form</span>
+            <button class="btn btn-primary btn-sm" onclick="tfbSave()" style="min-width:100px">💾 Save All</button>
+            <button class="btn btn-ghost btn-sm" onclick="resetSubjCfg()">↺ Reset</button>
+          </div>
+        </div>
+
+        <!-- Form Sections toggle -->
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px;padding:14px;background:var(--s2);border-radius:10px;border:1px solid var(--br)">
+          <span style="font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:1px;align-self:center;margin-right:6px">Form Sections:</span>
+          <label class="tfb-toggle-lbl"><input type="checkbox" id="tfb-show-basic" checked onchange="tfbSaveToggles()"> Basic Info</label>
+          <label class="tfb-toggle-lbl"><input type="checkbox" id="tfb-show-salon" checked onchange="tfbSaveToggles()"> Salon Auto-fill</label>
+          <label class="tfb-toggle-lbl"><input type="checkbox" id="tfb-show-subject" checked onchange="tfbSaveToggles()"> Subject Classification</label>
+          <label class="tfb-toggle-lbl"><input type="checkbox" id="tfb-show-desc" checked onchange="tfbSaveToggles()"> Issue Description</label>
+          <label class="tfb-toggle-lbl"><input type="checkbox" id="tfb-show-attach" checked onchange="tfbSaveToggles()"> Attachments / Screenshots</label>
+          <label class="tfb-toggle-lbl"><input type="checkbox" id="tfb-show-routing" checked onchange="tfbSaveToggles()"> Email Routing Box</label>
+        </div>
+
+        <div style="display:grid;grid-template-columns:260px 1fr;gap:14px;min-height:520px;max-height:700px">
+
+          <!-- LEFT: Subject Type list -->
+          <div style="border:1px solid var(--br);border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
+            <div style="padding:10px 12px;background:var(--s2);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center">
+              <span style="font-size:12px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.8px">Subject Types</span>
+              <button class="btn btn-ghost btn-xs" onclick="tfbAddType()">＋ Add</button>
+            </div>
+            <div id="tfb-type-list" style="flex:1;overflow-y:auto;padding:6px"></div>
+          </div>
+
+          <!-- RIGHT: Subject + field editor -->
+          <div style="border:1px solid var(--br);border-radius:10px;overflow:hidden;display:flex;flex-direction:column">
+            <div id="tfb-right-header" style="padding:10px 14px;background:var(--s2);border-bottom:1px solid var(--br);display:flex;justify-content:space-between;align-items:center;flex-shrink:0">
+              <span style="font-size:12px;font-weight:700;color:var(--muted)">← Select a Subject Type</span>
+            </div>
+            <div id="tfb-right-body" style="flex:1;overflow-y:auto;padding:14px">
+              <div style="color:var(--muted);font-size:13px;padding:40px 0;text-align:center">Select a subject type from the left panel to edit its subjects and fields.</div>
+            </div>
+            <!-- Sticky save bar at bottom of right panel -->
+            <div id="tfb-save-bar" style="display:none;padding:10px 14px;background:var(--s2);border-top:1px solid var(--br);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0">
+              <button class="btn btn-ghost btn-sm" onclick="tfbAddSubject()">＋ Add Subject</button>
+              <button class="btn btn-primary btn-sm" onclick="tfbSave()" style="min-width:110px">💾 Save All Changes</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Email + Routing Config -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:0">
+        <div class="card">
+          <div class="card-hd">📧 Global Email Config</div>
+          <div style="font-size:11.5px;color:var(--muted);margin-bottom:12px;padding:8px 12px;background:var(--accent-dim);border:1px solid rgba(0,184,184,.2);border-radius:6px;">
+            No hardcoded emails — configure everything here. Changes apply immediately to all tickets.
+          </div>
+          <div class="fg" style="margin-bottom:11px">
+            <label class="flbl">🟢 CEO Email <span style="font-size:10px;color:var(--muted);font-weight:400">(CC on every ticket · can approve)</span></label>
+            <input class="fc2" id="cfg-ceo" type="email" placeholder="ceo@biguineindia.com">
+          </div>
+          <div class="fg" style="margin-bottom:11px">
+            <label class="flbl">🔧 IT Resolver Email <span style="font-size:10px;color:var(--muted);font-weight:400">(CC · can resolve/close tickets)</span></label>
+            <input class="fc2" id="cfg-it" type="email" placeholder="it@biguineindia.com">
+          </div>
+          <div class="fg" style="margin-bottom:11px">
+            <label class="flbl">🔕 BCC Email <span style="font-size:10px;color:var(--muted);font-weight:400">(silent copy on every ticket)</span></label>
+            <input class="fc2" id="cfg-bcc" type="email" placeholder="admin@biguineindia.com">
+          </div>
+          <div class="fg" style="margin-bottom:11px">
+            <label class="flbl">Additional CC <span style="font-size:10px;color:var(--muted);font-weight:400">(comma-separated, added to every ticket)</span></label>
+            <input class="fc2" id="cfg-dcc" placeholder="e.g. hr@biguineindia.com">
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="saveEmailCfg()">💾 Save Email Config</button>
+        </div>
+        <div class="card">
+          <div class="card-hd">ℹ️ Routing Logic</div>
+          <div style="font-size:12.5px;color:var(--muted);line-height:1.9">
+            <strong style="color:var(--ink)">TO:</strong> NSH &amp; AM of the selected salon (from Master Data).<br>
+            <strong style="color:var(--ink)">CC:</strong> CEO Email + AM + IT Resolver (set above).<br>
+            <strong style="color:var(--ink)">BCC:</strong> BCC Email (set above).<br>
+            <strong style="color:var(--ink)">Approve:</strong> NSH role or CEO Email user only.<br>
+            <strong style="color:var(--ink)">Resolve:</strong> IT Resolver Email user only.
+          </div>
+        </div>
+      </div>
+    </div>
+
+<!-- QUICK EDIT MODAL -->
+<div class="overlay" id="qe-overlay">
+  <div class="modal">
+    <div class="modal-title" id="qe-title">Update Ticket</div>
+    <div class="modal-sub" id="qe-sub"></div>
+    <div class="form-grid">
+      <div class="fg full"><label class="flbl">Status</label>
+        <select class="fc2" id="qe-status"><option>Open</option><option>Pending</option><option>Resolved</option></select></div>
+      <div class="fg full"><label class="flbl">Remark / Action Taken</label>
+        <textarea class="fc2" id="qe-remark" rows="4" placeholder="What was done or next steps…"></textarea></div>
+      <div class="fg"><label class="flbl">Updated By</label>
+        <input class="fc2" id="qe-by" placeholder="Your name"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveQE()">Save →</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"><span id="toast-txt"></span></div>
+
+<!-- Floating Save button — visible on Admin page when editing TFB -->
+<button id="tfb-fab" onclick="tfbSave()" style="display:none;position:fixed;bottom:28px;right:28px;z-index:500;background:var(--accent);color:#fff;border:none;border-radius:50px;padding:13px 22px;font-size:13px;font-weight:700;font-family:'Outfit',sans-serif;cursor:pointer;box-shadow:0 6px 24px rgba(0,184,184,0.4);transition:all .2s;letter-spacing:.5px">
+  💾 Save All
+</button>
+
+<script>
+// ══════════════════════════════════════════════════
+//  MASTER SALON DATA (from provided list)
+// ══════════════════════════════════════════════════
+const MASTER_SALONS_DEFAULT = [
+  {name:'BOUNCE ANNANAGAR',display:'Bounce Annanagar',brand:'Bounce',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Anandhi',salonEmail:'bounce.annanagar@gmail.com',amEmail:'anandhi.eshwaran@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'ORYZA ST.MARY S ROAD',display:'Oryza St.Mary S Road',brand:'Oryza',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Anandhi',salonEmail:'oryza.admin@gmail.com',amEmail:'anandhi.eshwaran@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'KANYA R.K.SALAI',display:'Kanya R.K.Salai',brand:'Kanya',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Anandhi',salonEmail:'kanya2.admin@gmail.com',amEmail:'anandhi.eshwaran@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'KANDIVALI',display:'Jcb Kandivali',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Anoushka',salonEmail:'kandivali.mumbai@biguineindia.com',amEmail:'anoushka.bhagat@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Blessvia'},
+  {name:'OBEROI MALL',display:'Jcb Oberoi Mall',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Anoushka',salonEmail:'goregaon.mumbai@biguineindia.com',amEmail:'anoushka.bhagat@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Blessvia'},
+  {name:'CHEMBUR',display:'Jcb Chembur',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Sana',salonEmail:'chembur.mumbai@biguineindia.com',amEmail:'sana.shaikh@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Vidhi'},
+  {name:'JUHU',display:'Jcb Juhu',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Kalpana',salonEmail:'juhu.mumbai@biguineindia.com',amEmail:'kalpana.khatale@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Ashwini'},
+  {name:'POWAI',display:'Jcb Powai',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Kalpana',salonEmail:'powai.mumbai@biguineindia.com',amEmail:'kalpana.khatale@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Vidhi'},
+  {name:'RCITY',display:'Jcb Rcity',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Kalpana',salonEmail:'rcity.mumbai@biguineindia.com',amEmail:'kalpana.khatale@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Vidhi'},
+  {name:'AUNDH',display:'Jcb Aundh',brand:'Jcb',sub:'Jcb',city:'Pune',zone:'West',nsh:'Varun',am:'Kishore',salonEmail:'aundh.pune@biguineindia.com',amEmail:'kishore.pai@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Trimel'},
+  {name:'KOPA',display:'Jcb Kopa',brand:'Jcb',sub:'Jcb',city:'Pune',zone:'West',nsh:'Varun',am:'Kishore',salonEmail:'kopa.pune@biguineindia.com',amEmail:'kishore.pai@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Trimel'},
+  {name:'WAKAD',display:'Jcb Wakad',brand:'Jcb',sub:'Jcb',city:'Pune',zone:'West',nsh:'Varun',am:'Kishore',salonEmail:'wakad.pune@biguineindia.com',amEmail:'kishore.pai@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Trimel'},
+  {name:'BOUNCE LAVELLE ROAD',display:'Bounce Lavelle Road',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Mansi',salonEmail:'bouncestyleloungeblr@gmail.com',amEmail:'mansi@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Kavi'},
+  {name:'BOUNCE WHITEFIELD',display:'Bounce Whitefield',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Badruddin',salonEmail:'bouncewhitefield@gmail.com',amEmail:'badruddin.ah@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Kavi'},
+  {name:'BOUNCE VR MALL BENGALURU',display:'Bounce Vr Mall Bengaluru',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Badruddin',salonEmail:'bounce.vrmall@gmail.com',amEmail:'badruddin.ah@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Tarannum'},
+  {name:'ORYZA LAVELLE ROAD',display:'Oryza Lavelle Road',brand:'Oryza',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Mansi',salonEmail:'oryza.spa@gmail.com',amEmail:'mansi@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Kavi'},
+  {name:'BOUNCE ISPAHANI',display:'Bounce Ispahani',brand:'Bounce',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Mukesh',salonEmail:'bouncechennai@gmail.com',amEmail:'mukesh.m@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'BOUNCE ECR',display:'Bounce Ecr',brand:'Bounce',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Mukesh',salonEmail:'bounce.ecr@gmail.com',amEmail:'mukesh.m@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'BOUNCE ADYAR',display:'Bounce Adyar',brand:'Bounce',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Mukesh',salonEmail:'bounce.adyar@gmail.com',amEmail:'mukesh.m@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'BOUNCE OMR',display:'Bounce Omr',brand:'Bounce',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Mukesh',salonEmail:'bounce.omr@gmail.com',amEmail:'mukesh.m@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'BOUNCE KNK',display:'Bounce Knk',brand:'Bounce',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Mukesh',salonEmail:'bounce.knk@gmail.com',amEmail:'mukesh.m@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'BOUNCE ASHOKNAGAR',display:'Bounce Ashoknagar',brand:'Bounce',sub:'Spalon',city:'Chennai',zone:'South',nsh:'Abhishek',am:'Mukesh',salonEmail:'bounce.ashoknagar@gmail.com',amEmail:'mukesh.m@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'BOUNCE INORBIT MALL',display:'Bounce Inorbit Mall',brand:'Bounce',sub:'Spalon',city:'Hyderabad',zone:'South',nsh:'Abhishek',am:'Nataraj',salonEmail:'bounce.inorbit@gmail.com',amEmail:'nataraj.kanumuri@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'BOUNCE BANJARA HILLS',display:'Bounce Banjara Hills',brand:'Bounce',sub:'Spalon',city:'Hyderabad',zone:'South',nsh:'Abhishek',am:'Nataraj',salonEmail:'bounce.banjarahills@gmail.com',amEmail:'nataraj.kanumuri@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Srinivasa'},
+  {name:'PRABHADEVI',display:'Jcb Prabhadevi',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Nikita',salonEmail:'prabhadevi.mumbai@biguineindia.com',amEmail:'nikita.kini@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Ashwini'},
+  {name:'BANDRA-KURLA COMPLEX',display:'Jcb Bandra-Kurla Complex',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Nikita',salonEmail:'bkc.mumbai@biguineindia.com',amEmail:'nikita.kini@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Ashwini'},
+  {name:'PALLADIUM',display:'Jcb Palladium',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Nikita',salonEmail:'lowerparel.mumbai@biguineindia.com',amEmail:'nikita.kini@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Ashwini'},
+  {name:'BOUNCE JP NAGAR',display:'Bounce Jp Nagar',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Noor Saba',salonEmail:'bounce.jpnagar@gmail.com',amEmail:'noor.saba@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Saloni'},
+  {name:'BOUNCE ELECTRONIC CITY',display:'Bounce Electronic City',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Noor Saba',salonEmail:'bounce.ecity@gmail.com',amEmail:'noor.saba@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Saloni'},
+  {name:'BOUNCE FALCON CITY',display:'Bounce Falcon City',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Badruddin',salonEmail:'bounce.falconcity@gmail.com',amEmail:'badruddin.ah@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Saloni'},
+  {name:'BOUNCE NEW BEL ROAD',display:'Bounce New Bel Road',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Puneeth',salonEmail:'bounce.newbel@gmail.com',amEmail:'puneeth@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Kavi'},
+  {name:'BOUNCE MARATHAHALLI',display:'Bounce Marathahalli',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Puneeth',salonEmail:'bounce.marathahalli@gmail.com',amEmail:'puneeth@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Kavi'},
+  {name:'LAVELLE ROAD',display:'Jcb Lavelle Road',brand:'Jcb',sub:'Jcb',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Puneeth',salonEmail:'lavelle.bangalore@biguineindia.com',amEmail:'puneeth@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Saloni'},
+  {name:'KORAMANGALA',display:'Jcb Koramangala',brand:'Jcb',sub:'Jcb',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Puneeth',salonEmail:'koramangala.bangalore@biguineindia.com',amEmail:'puneeth@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Saloni'},
+  {name:'BOUNCE INDIRA NAGAR',display:'Bounce Indira Nagar',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Santhosh',salonEmail:'bounce.indiranagar@gmail.com',amEmail:'santhosh.j@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Tarannum'},
+  {name:'BOUNCE KAMANAHALLI',display:'Bounce Kamanahalli',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Santhosh',salonEmail:'bounce.kammanahalli@gmail.com',amEmail:'santhosh.j@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Tarannum'},
+  {name:'BOUNCE SARJAPUR',display:'Bounce Sarjapur',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Santhosh',salonEmail:'bounce.sarjapur@gmail.com',amEmail:'santhosh.j@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Tarannum'},
+  {name:'BOUNCE KORAMANGALA',display:'Bounce Koramangala',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Shivakumar',salonEmail:'bouncekoramangala@gmail.com',amEmail:'shivakumar.sh@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Tarannum'},
+  {name:'BOUNCE SAHAKARNAGAR',display:'Bounce Sahakarnagar',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Shivakumar',salonEmail:'bounce.sahakar@gmail.com',amEmail:'shivakumar.sh@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Kavi'},
+  {name:'BOUNCE HSR',display:'Bounce Hsr',brand:'Bounce',sub:'Spalon',city:'Bangalore',zone:'South',nsh:'Abhishek',am:'Shivakumar',salonEmail:'bounce.hsr@gmail.com',amEmail:'shivakumar.sh@spalon.in',nshEmail:'abhishek.saran@biguineindia.com',hr:'Tarannum'},
+  {name:'LOKHANDWALA',display:'Jcb Lokhandwala',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Sana',salonEmail:'lokhandwala.mumbai@biguineindia.com',amEmail:'sana.shaikh@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Blessvia'},
+  {name:'KEMPS CORNER',display:'Jcb Kemps Corner',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Zeenat',salonEmail:'kemps.mumbai@biguineindia.com',amEmail:'zeenat.rupani@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Vidhi'},
+  {name:'BANDRA PALI',display:'Jcb Bandra Pali',brand:'Jcb',sub:'Jcb',city:'Mumbai',zone:'West',nsh:'Varun',am:'Zeenat',salonEmail:'bandra.mumbai@biguineindia.com',amEmail:'zeenat.rupani@biguineindia.com',nshEmail:'varun.marwah@biguineindia.com',hr:'Blessvia'},
+];
+
+const DEFAULT_SUBJ_CFG = [
+  {subtype:'Bill Close Request from backend',subject:'OTP Issue',fields:'Center Name,Screenshot',mandatory:'Y'},
+  {subtype:'Bill Close Request from backend',subject:'SMS Not enabled in Guest History',fields:'Invoice No',mandatory:'Y'},
+  {subtype:'Bill Close Request from backend',subject:'Plutus Issue / International Number MOP',fields:'Screenshot',mandatory:'Y'},
+  {subtype:'Bill Close Request from backend',subject:'VIP / Blogger / Etc',fields:'Discount if any',mandatory:'N'},
+  {subtype:'Bill Close Request from backend',subject:'Redo Approval',fields:'Register Closer,Salon Confirmation',mandatory:'Y'},
+  {subtype:'Gift card / Membership extension',subject:'Extension Request',fields:'Mobile No,Invoice No (Past),GC/Package Name,Extension Required Date,Approval,Mode of payment',mandatory:'Y'},
+  {subtype:'Mode of payment changes',subject:'MOP Changes',fields:'Center Name,Invoice No,Date,Correct MOP,Approval',mandatory:'Y'},
+  {subtype:'Resource change',subject:'Resource change',fields:'Center Name,Invoice No,Service/Product Name,Incorrect Resource Name,Correct Resource Name,Approval',mandatory:'Y'},
+  {subtype:'Bill delete request',subject:'Incorrect Billing',fields:'Center Name,Invoice No,Reason,Correct Invoice if any,Approval,Other Details',mandatory:'Y'},
+  {subtype:'Promotion not working',subject:'Promo Issue',fields:'Exact Promo Name,Email Trail from Marketing,Approval Required for Extension or Logic change',mandatory:'Y'},
+  {subtype:'Wrong Service/Product Billing',subject:'Wrong Billing',fields:'Center Name,Invoice No,Rectification Details,Action Required (GC or Refund for Credit Note),Approval',mandatory:'Y'},
+  {subtype:'Refund request',subject:'Refund request',fields:'Invoice No,Center Name,Reason,Approval',mandatory:'Y'},
+  {subtype:'Bill modification',subject:'E-Com Discount',fields:'Invoice No,Screenshot',mandatory:'Y'},
+  {subtype:'Bill modification',subject:'Promo Issue',fields:'Center Name',mandatory:'Y'},
+  {subtype:'Bill modification',subject:'Other Changes',fields:'Reason,Approval',mandatory:'Y'},
+  {subtype:'Employee base center change',subject:'Base Center Changes',fields:'HR Email,Current Base Center,New Base Center,Employee Code & Role & Designation',mandatory:'Y'},
+  {subtype:'Guest Profile Changes',subject:'Guest Profile Changes',fields:'Guest Details Screenshot,Incorrect Details,Correct Details,Guest Confirmation Screenshot,Management Approval',mandatory:'Y'},
+  {subtype:'Remove From Zenoti',subject:'Employee Deactivation',fields:'Center Name,Employee Code,Date of Termination',mandatory:'Y'},
+];
+
+// ══════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════
+let currentUser  = null; // {role:'nsh'|'am'|'salon', name, email, zone?, amName?, salonName?}
+let masterSalons = JSON.parse(localStorage.getItem('masterSalons')||'null') || MASTER_SALONS_DEFAULT;
+let subjCfg      = JSON.parse(localStorage.getItem('subjCfg')||'null') || DEFAULT_SUBJ_CFG;
+let emailCfg = JSON.parse(localStorage.getItem('emailCfg')||'null') || {
+  defaultCC: '',
+  approval:  '',
+  ceoEmail:  '',   // CEO — gets CC on every ticket, can approve
+  itEmail:   '',   // IT resolver — gets CC, can resolve/close tickets
+  bccEmail:  ''    // BCC on every ticket (admin silent copy)
+};
+let allTickets   = [];
+let selectedFiles= [];
+let selFuId      = null;
+let editId       = null;
+
+// ══════════════════════════════════════════════════
+//  USER DIRECTORY  (username → internal val string)
+// ══════════════════════════════════════════════════
+// ── Version stamp — bump this to force-clear stale localStorage ──
+const APP_VERSION = '3.0';
+if (localStorage.getItem('hdVersion') !== APP_VERSION) {
+  // Clear all auth/password data so default password always works on fresh file
+  ['masterUsers','hdUser','hdUserVal','emailCfg','hdTokenLogin'].forEach(k => localStorage.removeItem(k));
+  Object.keys(localStorage).filter(k=>k.startsWith('hdpw::')).forEach(k=>localStorage.removeItem(k));
+  localStorage.setItem('hdVersion', APP_VERSION);
+}
+
+// masterUsers: [{username, name, email, role, zone, password}]
+// roles: admin | nsh | am | ceo | it | salon
+let masterUsers = JSON.parse(localStorage.getItem('masterUsers')||'null');
+
+// First boot — seed the known admin account
+if (!masterUsers || !masterUsers.length) {
+  masterUsers = [
+    {username:'bhupenderkvijjan', name:'Bhupender', email:'bvijjan@biguineindia.com', role:'admin', zone:'', password:'helpdesk@123'}
+  ];
+  localStorage.setItem('masterUsers', JSON.stringify(masterUsers));
+}
+
+let USER_DIRECTORY = {};
+
+function buildUserDirectory() {
+  USER_DIRECTORY = {};
+
+  // ── From masterUsers (admin-managed accounts) ──
+  masterUsers.forEach(u => {
+    if (!u.username) return;
+    const uname = u.username.toLowerCase().replace(/\s+/g,'');
+    let val = '';
+    if (u.role === 'admin')  val = `admin::${u.name}::${u.email}::`;
+    else if (u.role === 'nsh') val = `nsh::${u.name}::${u.email}::${u.zone||''}`;
+    else if (u.role === 'am')  val = `am::${u.name}::${u.email}::${u.zone||''}`;
+    else if (u.role === 'it')  val = `salon::${u.name}::${u.email}::::::`;
+    else                       val = `salon::${u.name}::${u.email}::::::`;
+    USER_DIRECTORY[uname] = val;
+    // Sync stored password from masterUsers into pwKey storage
+    const key = pwKey(val);
+    if (!localStorage.getItem(key) && u.password) {
+      localStorage.setItem(key, u.password);
+    }
+  });
+
+  // ── Salons (auto from master salon data — username = salon code lowercase) ──
+  masterSalons.forEach(s => {
+    if (!s.name) return;
+    const uname = s.name.toLowerCase().replace(/\s+/g,'');
+    // Only add if not already in masterUsers
+    if (!USER_DIRECTORY[uname]) {
+      USER_DIRECTORY[uname] = `salon::${s.name}::${s.salonEmail}::${s.am}::${s.amEmail}::${s.nsh}::${s.nshEmail}`;
+    }
+  });
+
+  // ── AMs (auto from master salon data) ──
+  const ams = {};
+  masterSalons.forEach(s => { if (s.am && !ams[s.am]) ams[s.am] = {email:s.amEmail, zone:s.zone}; });
+  Object.entries(ams).forEach(([name, d]) => {
+    const uname = name.toLowerCase().replace(/\s+/g,'');
+    if (!USER_DIRECTORY[uname]) {
+      USER_DIRECTORY[uname] = `am::${name}::${d.email}::${d.zone}`;
+    }
+  });
+}
+
+// Keep for form dropdowns
+function buildLoginDropdowns() { /* no-op — login is username-based */ }
+
+// ══════════════════════════════════════════════════
+//  PASSWORD HELPERS
+// ══════════════════════════════════════════════════
+const DEFAULT_PW = 'helpdesk@123';
+
+function pwKey(userVal) {
+  // Use role::name as stable key — trim empty trailing parts
+  const parts = userVal.split('::');
+  return 'hdpw::' + parts[0] + '::' + (parts[1]||'').toLowerCase().replace(/\s+/g,'');
+}
+
+function getStoredPw(userVal) {
+  return localStorage.getItem(pwKey(userVal)) || DEFAULT_PW;
+}
+
+function setPw(userVal, pw) {
+  localStorage.setItem(pwKey(userVal), pw);
+}
+
+function isDefaultPw(userVal) {
+  const stored = localStorage.getItem(pwKey(userVal));
+  return !stored || stored === DEFAULT_PW;
+}
+
+function togglePw(id, btn) {
+  const el = document.getElementById(id);
+  if (el.type === 'password') { el.type = 'text'; btn.textContent = '🙈'; }
+  else { el.type = 'password'; btn.textContent = '👁'; }
+}
+
+// Resets stored password for the entered username back to default
+// so the user can log in with helpdesk@123 again
+function resetMyPassword() {
+  const username = (document.getElementById('login-username').value || '').trim().toLowerCase().replace(/\s+/g,'');
+  const err = document.getElementById('login-err');
+
+  if (!username) {
+    err.textContent = 'Enter your username first, then click Reset.';
+    err.style.display = 'block';
+    return;
+  }
+
+  // Clear ALL stored passwords (simplest — works even if username lookup fails)
+  Object.keys(localStorage).filter(k => k.startsWith('hdpw::')).forEach(k => localStorage.removeItem(k));
+  localStorage.removeItem('hdUser');
+  localStorage.removeItem('hdUserVal');
+  localStorage.removeItem('hdTokenLogin');
+
+  err.style.display = 'none';
+  document.getElementById('login-pw').value = '';
+
+  // Show a friendly message in green
+  const hint = document.createElement('div');
+  hint.style.cssText = 'font-size:12px;color:var(--grn);margin-top:6px;padding:8px 12px;background:var(--grn-bg);border-radius:6px;border:1px solid rgba(45,125,79,.2)';
+  hint.textContent = '✅ Password reset! Now login with: helpdesk@123';
+  const btn = document.querySelector('.login-btn');
+  btn.parentNode.insertBefore(hint, btn.nextSibling.nextSibling);
+  setTimeout(() => hint.remove(), 5000);
+}
+
+function checkStrength() {
+  const v = document.getElementById('cpw-new').value;
+  const bar = document.getElementById('pw-strength-bar');
+  const txt = document.getElementById('pw-strength-txt');
+  if (!v) { bar.style.width='0'; txt.textContent=''; return; }
+  let score = 0;
+  if (v.length >= 8) score++;
+  if (/[A-Z]/.test(v)) score++;
+  if (/[0-9]/.test(v)) score++;
+  if (/[^A-Za-z0-9]/.test(v)) score++;
+  const levels = [
+    {w:'20%', bg:'var(--red)',   label:'Too weak',  color:'var(--red)'},
+    {w:'45%', bg:'var(--ylw)',   label:'Weak',       color:'var(--ylw)'},
+    {w:'70%', bg:'var(--ylw)',   label:'Fair',       color:'var(--ylw)'},
+    {w:'100%',bg:'var(--grn)',   label:'Strong ✓',  color:'var(--grn)'},
+  ];
+  const l = levels[Math.min(score-1, 3)] || levels[0];
+  bar.style.cssText=`height:4px;border-radius:2px;transition:all .3s;background:${l.bg};width:${l.w}`;
+  txt.style.color = l.color;
+  txt.textContent = l.label;
+}
+
+let _pendingUserVal = null; // user value waiting for pw change
+
+function saveNewPw() {
+  const np = document.getElementById('cpw-new').value;
+  const cp = document.getElementById('cpw-confirm').value;
+  const err = document.getElementById('chpw-err');
+  err.style.display='none';
+
+  if (np.length < 8) { err.textContent='Password must be at least 8 characters.'; err.style.display='block'; return; }
+  if (np === DEFAULT_PW) { err.textContent='New password cannot be the same as the default password.'; err.style.display='block'; return; }
+  if (np !== cp) { err.textContent='Passwords do not match.'; err.style.display='block'; return; }
+
+  const target = _pendingUserVal || localStorage.getItem('hdUserVal') || '';
+  setPw(target, np);
+
+  // Also update password in masterUsers so it's visible in admin & syncs to Sheet
+  const parts = target.split('::');
+  const uname = (parts[1]||'').toLowerCase().replace(/\s+/g,'');
+  const uIdx = masterUsers.findIndex(u => u.username.toLowerCase().replace(/\s+/g,'') === uname);
+  if (uIdx >= 0) {
+    masterUsers[uIdx].password = np;
+    localStorage.setItem('masterUsers', JSON.stringify(masterUsers));
+    syncUsersToSheets();
+  }
+
+  document.getElementById('chpw-overlay').classList.remove('open');
+
+  const wasFirstLogin = !currentUser;
+  _pendingUserVal = null;
+
+  if (wasFirstLogin) {
+    showToast('✅ Password set! You are now signed in.', 'ok');
+    startApp();
+  } else {
+    showToast('✅ Password changed successfully!', 'ok');
+  }
+}
+
+function openChangePw(force) {
+  // Set pending user val — either from login flow or from sidebar
+  if (!_pendingUserVal) {
+    _pendingUserVal = localStorage.getItem('hdUserVal') || '';
+  }
+  // Reset fields
+  ['cpw-new','cpw-confirm'].forEach(id=>{ const el=document.getElementById(id); if(el){el.value='';el.type='password';} });
+  const bar=document.getElementById('pw-strength-bar');
+  const txt=document.getElementById('pw-strength-txt');
+  if(bar)bar.style.cssText='height:4px;border-radius:2px;background:var(--br);width:0';
+  if(txt)txt.textContent='';
+  const err=document.getElementById('chpw-err'); if(err)err.style.display='none';
+  document.getElementById('chpw-overlay').classList.add('open');
+}
+
+function doLogin() {
+  const username = (document.getElementById('login-username').value || '').trim().toLowerCase().replace(/\s+/g,'');
+  const pw  = document.getElementById('login-pw').value;
+  const err = document.getElementById('login-err');
+  err.style.display = 'none';
+
+  if (!username) { err.textContent = 'Please enter your username.'; err.style.display = 'block'; return; }
+  if (!pw)       { err.textContent = 'Please enter your password.'; err.style.display = 'block'; return; }
+
+  // Look up user in directory
+  const val = USER_DIRECTORY[username];
+  if (!val) {
+    err.textContent = `Username "${username}" not found. Use your assigned username (e.g. first name or salon code). Contact admin if unsure.`;
+    err.style.display = 'block';
+    return;
+  }
+
+  const storedPw = localStorage.getItem(pwKey(val));
+  const correctPw = storedPw || DEFAULT_PW;
+
+  if (pw !== correctPw) { err.textContent = 'Incorrect password. Please try again.'; err.style.display = 'block'; return; }
+
+  // Build user object
+  const parts = val.split('::');
+  const role  = parts[0];
+  if (role === 'admin') {
+    currentUser = {role:'admin', name:parts[1], email:parts[2]};
+  } else if (role === 'nsh') {
+    currentUser = {role:'nsh', name:parts[1], email:parts[2], zone:parts[3]};
+  } else if (role === 'am') {
+    currentUser = {role:'am', name:parts[1], email:parts[2], zone:parts[3]};
+  } else {
+    currentUser = {role:'salon', name:parts[1], email:parts[2], am:parts[3], amEmail:parts[4], nsh:parts[5], nshEmail:parts[6]};
+  }
+
+  localStorage.setItem('hdUser',    JSON.stringify(currentUser));
+  localStorage.setItem('hdUserVal', val);
+
+  // Force password change if still on default (no custom pw stored yet)
+  if (!storedPw || storedPw === DEFAULT_PW) {
+    _pendingUserVal = val;
+    const n = document.getElementById('cpw-new'); if(n){n.value='';n.type='password';}
+    const c = document.getElementById('cpw-confirm'); if(c){c.value='';c.type='password';}
+    const bar=document.getElementById('pw-strength-bar'); if(bar)bar.style.cssText='height:4px;border-radius:2px;background:var(--br);width:0';
+    const txt=document.getElementById('pw-strength-txt'); if(txt)txt.textContent='';
+    const cherr=document.getElementById('chpw-err'); if(cherr)cherr.style.display='none';
+    document.getElementById('chpw-overlay').classList.add('open');
+    return;
+  }
+
+  startApp();
+}
+
+function doLogout() {
+  currentUser = null;
+  localStorage.removeItem('hdUser');
+  localStorage.removeItem('hdUserVal');
+  localStorage.removeItem('hdTokenLogin');
+  document.getElementById('sidebar').classList.add('hidden');
+  document.getElementById('main-app').classList.add('hidden');
+  document.getElementById('login-pw').value = '';
+  const uEl = document.getElementById('login-username'); if(uEl) uEl.value = '';
+  document.getElementById('login-err').style.display='none';
+  document.getElementById('login-screen').style.display='flex';
+}
+
+// ══════════════════════════════════════════════════
+//  START APP
+// ══════════════════════════════════════════════════
+function startApp() {
+  document.getElementById('login-screen').style.display='none';
+  document.getElementById('sidebar').classList.remove('hidden');
+  document.getElementById('main-app').classList.remove('hidden');
+
+  // Set user info
+  document.getElementById('u-name').textContent = currentUser.name;
+  document.getElementById('ua').textContent = currentUser.name[0].toUpperCase();
+  const roleMap = {admin:'Administrator', nsh:'National Sales Head', am:'Area Manager', salon:'Salon'};
+  document.getElementById('u-role').textContent = roleMap[currentUser.role] || currentUser.role;
+
+  // Show/hide NSH-only items
+  document.querySelectorAll('.admin-only').forEach(el => {
+    if (currentUser.role === 'admin') el.classList.remove('hidden');
+    else el.classList.add('hidden');
+  });
+
+  loadTickets();
+  loadUsersFromSheets(); // pull latest users+passwords from Sheet
+  buildFormDropdowns();
+  goTo('dashboard');
+}
+
+function loadTickets() {
+  const raw = localStorage.getItem('hdTickets');
+  allTickets = raw ? JSON.parse(raw) : getSample();
+  renderAll();
+}
+
+function saveTickets() { localStorage.setItem('hdTickets', JSON.stringify(allTickets)); syncToSheets(); }
+
+// ══════════════════════════════════════════════════
+//  GOOGLE SHEETS SYNC
+// ══════════════════════════════════════════════════
+const SHEET_ID = '1W99bwGTVLzBjRRHRpPkAy_C2LoflzrnjYxFL5GbLRNk';
+// ⚠️ PASTE YOUR NEW APPS SCRIPT URL HERE (see Admin → Sheet Config)
+let APPS_SCRIPT_URL = localStorage.getItem('hdScriptUrl') || 'https://script.google.com/a/macros/biguineindia.com/s/AKfycbwqYq9xrvH1qhKWTOkgdJWrIXhc1xtz0lW0gb16IIO3rKFHXEGC7N6_KZSjI-Icahdp3g/exec';
+
+// ── Test connection — call this first to verify the URL works ──
+async function testSheetConnection() {
+  const url = document.getElementById('cfg-script-url')?.value.trim() || APPS_SCRIPT_URL;
+  showToast('Testing connection…','inf');
+  try {
+    const res = await fetch(`${url}?action=ping`, {cache:'no-store'});
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    if (data.status === 'ok' || data.message) {
+      showToast('✅ Connection successful! Apps Script is reachable.','ok');
+      return true;
+    } else {
+      showToast('⚠️ Got a response but unexpected format: ' + JSON.stringify(data),'err');
+      return false;
+    }
+  } catch(e) {
+    showToast('❌ Cannot reach Apps Script: ' + e.message + ' — See instructions below.','err');
+    console.error('Connection test failed:', e);
+    return false;
+  }
+}
+
+// ── Save custom Apps Script URL ──
+function saveScriptUrl() {
+  const url = (document.getElementById('cfg-script-url')?.value || '').trim();
+  if (!url || !url.includes('script.google.com')) {
+    showToast('Please enter a valid Apps Script URL','err'); return;
+  }
+  APPS_SCRIPT_URL = url;
+  localStorage.setItem('hdScriptUrl', url);
+  showToast('✅ Apps Script URL saved!','ok');
+}
+
+// ── Core GET (reads) ──
+async function sheetsGet(params) {
+  if (!APPS_SCRIPT_URL) return null;
+  try {
+    const qs = new URLSearchParams(params).toString();
+    const res = await fetch(`${APPS_SCRIPT_URL}?${qs}`, {cache:'no-store'});
+    if (!res.ok) return null;
+    return await res.json();
+  } catch(e) { console.warn('Sheets GET failed:', e); return null; }
+}
+
+// ── Write via GET with payload param (avoids CORS POST issues) ──
+async function sheetsPost(payload) {
+  if (!APPS_SCRIPT_URL) return;
+  const json = JSON.stringify(payload);
+  // Chunk large arrays — tickets OR salons
+  if (json.length > 6000) {
+    const arr = payload.tickets || payload.salons;
+    const key = payload.tickets ? 'tickets' : 'salons';
+    if (arr) {
+      const chunkSize = 10;
+      for (let i = 0; i < arr.length; i += chunkSize) {
+        const chunk = arr.slice(i, i + chunkSize);
+        await _sheetsGetWrite({...payload, [key]: chunk, chunkIndex: i});
+      }
+      return;
+    }
+  }
+  await _sheetsGetWrite(payload);
+}
+
+async function _sheetsGetWrite(payload) {
+  try {
+    const params = new URLSearchParams({
+      action: payload.action,
+      payload: JSON.stringify(payload)
+    });
+    await fetch(`${APPS_SCRIPT_URL}?${params.toString()}`, {
+      mode: 'no-cors', cache: 'no-store'
+    });
+  } catch(e) { console.warn('Sheets write failed:', e); }
+}
+
+async function syncToSheets() {
+  await sheetsPost({action:'syncTickets', tickets: allTickets});
+}
+
+async function loadFromSheets() {
+  showToast('Fetching from Google Sheets…','inf');
+  const data = await sheetsGet({action:'getTickets'});
+  if (data?.tickets?.length) {
+    allTickets = data.tickets;
+    localStorage.setItem('hdTickets', JSON.stringify(allTickets));
+    renderAll();
+    showToast('✅ Synced from Google Sheets','ok');
+  } else {
+    showToast('No data from Sheets (or offline)','inf');
+  }
+}
+
+async function syncUsersToSheets() {
+  await sheetsPost({action:'syncUsers', users: masterUsers});
+}
+
+async function loadUsersFromSheets() {
+  const data = await sheetsGet({action:'getUsers'});
+  if (data?.users?.length) {
+    masterUsers = data.users;
+    localStorage.setItem('masterUsers', JSON.stringify(masterUsers));
+    buildUserDirectory();
+    showToast('Users synced from Sheet','inf');
+  }
+}
+
+// ══════════════════════════════════════════════════
+//  TOKEN / MAGIC-LINK LOGIN SYSTEM
+// ══════════════════════════════════════════════════
+
+// Generate a random token string
+function generateToken() {
+  const arr = new Uint8Array(18);
+  crypto.getRandomValues(arr);
+  return Array.from(arr, b => b.toString(16).padStart(2,'0')).join('');
+}
+
+// Get the base URL for sharing (works on GitHub Pages, localhost, anywhere)
+function getBaseUrl() {
+  return window.location.origin + window.location.pathname;
+}
+
+// All tokens stored locally: {username → token}
+function getTokenMap() {
+  return JSON.parse(localStorage.getItem('hdTokenMap') || '{}');
+}
+function saveTokenMap(map) {
+  localStorage.setItem('hdTokenMap', JSON.stringify(map));
+}
+
+// Generate token for a single user (returns token)
+function ensureToken(username) {
+  const map = getTokenMap();
+  if (!map[username]) {
+    map[username] = generateToken();
+    saveTokenMap(map);
+  }
+  return map[username];
+}
+
+// Regenerate token for a user
+function regenToken(username) {
+  const map = getTokenMap();
+  map[username] = generateToken();
+  saveTokenMap(map);
+  renderTokenTable();
+  syncTokensToSheets();
+  showToast(`New link generated for ${username}`,'ok');
+}
+
+// Generate tokens for ALL users who don't have one
+function generateAllTokens() {
+  const map = getTokenMap();
+  let added = 0;
+  masterUsers.forEach(u => {
+    if (u.username && !map[u.username]) {
+      map[u.username] = generateToken();
+      added++;
+    }
+  });
+  // Also for salon users from masterSalons
+  masterSalons.forEach(s => {
+    const uname = s.name.toLowerCase().replace(/\s+/g,'');
+    if (!map[uname]) { map[uname] = generateToken(); added++; }
+  });
+  saveTokenMap(map);
+  renderTokenTable();
+  syncTokensToSheets();
+  showToast(`✅ ${added} new links generated!`,'ok');
+}
+
+// Copy link to clipboard
+function copyTokenLink(username) {
+  const map = getTokenMap();
+  const token = map[username];
+  if (!token) { showToast('No link yet — generate first','err'); return; }
+  const url = `${getBaseUrl()}?token=${token}`;
+  navigator.clipboard.writeText(url).then(() => {
+    showToast(`✅ Link copied for ${username}!`,'ok');
+  }).catch(() => {
+    prompt('Copy this link:', url);
+  });
+}
+
+// Share via WhatsApp
+function shareTokenWhatsApp(username) {
+  const map = getTokenMap();
+  const token = map[username];
+  if (!token) { showToast('Generate link first','err'); return; }
+  const url = `${getBaseUrl()}?token=${token}`;
+  const user = masterUsers.find(u=>u.username===username);
+  const name = user?.name || username;
+  const msg = `Hello ${name}! Here is your JCB Help Desk login link. Tap to open and you will be signed in automatically:\n\n${url}\n\nBookmark this link for future use.`;
+  window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
+}
+
+// Sync token map to Sheets
+async function syncTokensToSheets() {
+  const map = getTokenMap();
+  await sheetsPost({action:'syncTokens', tokens: map});
+}
+
+// Load token map from Sheets (for cross-device sync)
+async function loadTokensFromSheet() {
+  showToast('Loading links from Sheet…','inf');
+  const data = await sheetsGet({action:'getTokens'});
+  if (data?.tokens) {
+    const existing = getTokenMap();
+    const merged = Object.assign(existing, data.tokens);
+    saveTokenMap(merged);
+    renderTokenTable();
+    showToast('✅ Links synced from Sheet','ok');
+  } else {
+    showToast('No token data in Sheet yet','inf');
+  }
+}
+
+// Render the token table in Admin
+function renderTokenTable() {
+  const map = getTokenMap();
+  const baseUrl = getBaseUrl();
+  document.getElementById('token-base-url-display').textContent = baseUrl;
+
+  // Combine masterUsers + salon logins
+  const rows = [];
+  masterUsers.forEach(u => {
+    if (!u.username) return;
+    rows.push({username: u.username, name: u.name, role: u.role, type:'user'});
+  });
+  // Salons not in masterUsers
+  masterSalons.forEach(s => {
+    const uname = s.name.toLowerCase().replace(/\s+/g,'');
+    if (!masterUsers.find(u=>u.username===uname)) {
+      rows.push({username: uname, name: s.display||s.name, role:'salon', type:'salon'});
+    }
+  });
+
+  document.getElementById('token-master-body').innerHTML = rows.map(r => {
+    const token = map[r.username] || '';
+    const link = token ? `${baseUrl}?token=${token}` : '';
+    const shortToken = token ? token.slice(0,10)+'…' : '—';
+    return `<tr>
+      <td style="font-weight:600;color:var(--ink)">${esc(r.name)}</td>
+      <td><span class="b-cat">${esc(r.role)}</span></td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${esc(r.username)}</td>
+      <td style="font-family:'DM Mono',monospace;font-size:11px;color:var(--muted)">${shortToken}</td>
+      <td style="font-size:11px;max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--accent)">${link ? link : '<span style="color:var(--muted)">No link yet</span>'}</td>
+      <td style="display:flex;gap:5px;align-items:center;flex-wrap:wrap">
+        ${token
+          ? `<button class="token-copy-btn" onclick="copyTokenLink('${esc(r.username)}')">📋 Copy Link</button>
+             <button class="token-copy-btn" style="background:var(--grn-bg);border-color:rgba(45,125,79,.3);color:var(--grn)" onclick="shareTokenWhatsApp('${esc(r.username)}')">💬 WhatsApp</button>
+             <button class="token-gen-btn" onclick="regenToken('${esc(r.username)}')">↺ New Link</button>`
+          : `<button class="token-gen-btn" onclick="regenToken('${esc(r.username)}')">⚡ Generate</button>`
+        }
+      </td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:20px">No users found. Add users first, then generate links.</td></tr>';
+}
+
+// ── CHECK URL TOKEN ON PAGE LOAD ──
+async function checkUrlToken() {
+  const params = new URLSearchParams(window.location.search);
+  const token = params.get('token');
+  if (!token) return false; // no token in URL — normal login
+
+  // Show the banner
+  const banner = document.getElementById('token-banner');
+  const msg = document.getElementById('token-msg');
+  const spinner = document.getElementById('token-spinner');
+  const divider = document.getElementById('token-divider');
+  banner.classList.add('show');
+  spinner.style.display = 'inline-block';
+  msg.textContent = 'Verifying your login link…';
+  msg.style.color = 'var(--muted)';
+
+  // First try local token map (works offline too)
+  const localMap = getTokenMap();
+  let matchedUsername = Object.keys(localMap).find(u => localMap[u] === token);
+
+  // If not found locally, try fetching from Sheets
+  if (!matchedUsername) {
+    try {
+      const data = await sheetsGet({action:'validateToken', token});
+      if (data?.username) {
+        matchedUsername = data.username;
+        // Cache locally
+        const map = getTokenMap();
+        map[matchedUsername] = token;
+        saveTokenMap(map);
+      }
+    } catch(e) { /* offline — fall through */ }
+  }
+
+  spinner.style.display = 'none';
+
+  if (!matchedUsername) {
+    msg.innerHTML = '❌ <span class="token-login-err">This login link is invalid or has not been generated yet. Please sign in manually below.</span>';
+    divider.style.display = 'flex';
+    return false;
+  }
+
+  // Find user in directory
+  buildUserDirectory(); // ensure directory is built
+  const val = USER_DIRECTORY[matchedUsername];
+  if (!val) {
+    // Try to build from masterUsers
+    const u = masterUsers.find(u => u.username.toLowerCase().replace(/\s+/g,'') === matchedUsername);
+    if (!u) {
+      msg.innerHTML = '⚠️ <span class="token-login-err">User not found. Please ask your admin to regenerate your link.</span>';
+      divider.style.display = 'flex';
+      return false;
+    }
+  }
+
+  msg.innerHTML = `✅ <span class="token-login-ok">Link verified! Signing you in…</span>`;
+
+  // Build currentUser from val
+  const parts = (val||'').split('::');
+  const role = parts[0];
+  if (role === 'admin')       currentUser = {role:'admin', name:parts[1], email:parts[2]};
+  else if (role === 'nsh')    currentUser = {role:'nsh', name:parts[1], email:parts[2], zone:parts[3]};
+  else if (role === 'am')     currentUser = {role:'am', name:parts[1], email:parts[2], zone:parts[3]};
+  else                        currentUser = {role:'salon', name:parts[1], email:parts[2], am:parts[3], amEmail:parts[4], nsh:parts[5], nshEmail:parts[6]};
+
+  localStorage.setItem('hdUser', JSON.stringify(currentUser));
+  localStorage.setItem('hdUserVal', val||'');
+  localStorage.setItem('hdTokenLogin', '1'); // flag: logged in via token (skip pw change)
+
+  // Clean token from URL without reload (so bookmarks work)
+  const cleanUrl = window.location.pathname;
+  window.history.replaceState({}, '', cleanUrl);
+
+  setTimeout(() => { startApp(); }, 600);
+  return true;
+}
+
+// ══════════════════════════════════════════════════
+//  FILTER TICKETS BY ROLE
+// ══════════════════════════════════════════════════
+function myTickets() {
+  if (!currentUser) return [];
+  if (currentUser.role === 'admin') {
+    // Admin sees all tickets across all zones
+    return allTickets;
+  }
+  if (currentUser.role === 'nsh') {
+    // NSH sees all tickets in their zone
+    const mySalons = masterSalons.filter(s=>s.nsh===currentUser.name).map(s=>s.name);
+    return allTickets.filter(t => mySalons.includes(t.salonCode) || t.nsh===currentUser.name);
+  }
+  if (currentUser.role === 'am') {
+    // AM sees all tickets for their salons
+    const mySalons = masterSalons.filter(s=>s.am===currentUser.name).map(s=>s.name);
+    return allTickets.filter(t => mySalons.includes(t.salonCode) || t.amName===currentUser.name);
+  }
+  // Salon sees only own tickets
+  return allTickets.filter(t => t.salonCode === currentUser.name || t.salonEmail === currentUser.email);
+}
+
+// ══════════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════════
+function renderAll() {
+  const tickets = myTickets();
+  updateStats(tickets);
+  renderRecent(tickets);
+  renderTicketsTable(tickets);
+  renderFuList();
+  updateOpenBadge();
+}
+
+function updateStats(tickets) {
+  document.getElementById('st-total').textContent = tickets.length;
+  document.getElementById('st-open').textContent  = tickets.filter(t=>t.status==='Open').length;
+  document.getElementById('st-pend').textContent  = tickets.filter(t=>t.status==='Pending').length;
+  document.getElementById('st-done').textContent  = tickets.filter(t=>t.status==='Resolved').length;
+  renderCatChart(tickets);
+  renderStatusChart(tickets);
+}
+
+function renderCatChart(tickets) {
+  const c={};
+  tickets.forEach(t=>{c[t.subtype]=(c[t.subtype]||0)+1;});
+  const sorted=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,7);
+  const max=sorted[0]?.[1]||1;
+  document.getElementById('cat-chart').innerHTML = sorted.map(([l,v])=>`
+    <div style="display:flex;align-items:center;gap:9px;margin-bottom:8px;">
+      <div style="font-size:11px;color:var(--muted);width:150px;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${esc(l)}</div>
+      <div style="flex:1;background:var(--s2);border-radius:3px;height:6px;border:1px solid var(--br);overflow:hidden;"><div style="height:100%;border-radius:3px;background:var(--accent);width:${Math.round(v/max*100)}%"></div></div>
+      <div style="font-size:11px;color:var(--muted);width:18px;text-align:right">${v}</div>
+    </div>`).join('') || '<p style="color:var(--muted);font-size:13px">No data yet</p>';
+}
+
+function renderStatusChart(tickets) {
+  const tot=tickets.length||1;
+  [['Open',tickets.filter(t=>t.status==='Open').length,'var(--red)'],
+   ['Pending',tickets.filter(t=>t.status==='Pending').length,'var(--ylw)'],
+   ['Resolved',tickets.filter(t=>t.status==='Resolved').length,'var(--grn)']].forEach(([l,v,c])=>{});
+  document.getElementById('status-chart').innerHTML=[
+    ['Open',tickets.filter(t=>t.status==='Open').length,'var(--red)'],
+    ['Pending',tickets.filter(t=>t.status==='Pending').length,'var(--ylw)'],
+    ['Resolved',tickets.filter(t=>t.status==='Resolved').length,'var(--grn)']
+  ].map(([l,v,c])=>`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;">
+      <div style="width:9px;height:9px;border-radius:50%;background:${c};flex-shrink:0"></div>
+      <div style="font-size:12px;color:var(--ink2);width:64px">${l}</div>
+      <div style="flex:1;background:var(--s2);border-radius:3px;height:7px;border:1px solid var(--br);overflow:hidden;"><div style="height:100%;background:${c};width:${Math.round(v/tot*100)}%"></div></div>
+      <div style="font-size:12px;color:var(--muted);width:22px;text-align:right">${v}</div>
+    </div>`).join('');
+}
+
+function renderRecent(tickets) {
+  const rows = [...tickets].sort((a,b)=>b.id.localeCompare(a.id)).slice(0,8);
+  document.getElementById('recent-tbody').innerHTML = rows.map(t=>`<tr>
+    <td class="td-mono">${esc(t.id)}</td>
+    <td class="td-bold">${esc(t.salonDisplay||t.salonCode)}</td>
+    <td><span class="b-cat">${esc(t.subtype)}</span></td>
+    <td style="font-size:12px;color:var(--ink2)">${esc(t.subject)}</td>
+    <td>${prioBadge(t.priority)}</td>
+    <td>${waitBadge(t.waitingSince)}</td>
+    <td>${statusBadge(t.status)}</td>
+  </tr>`).join('') || `<tr><td colspan="7"><div class="empty-state"><div class="empty-icon">🎫</div><div class="empty-text">No tickets yet</div></div></td></tr>`;
+}
+
+function renderTicketsTable(filtered) {
+  const list = filtered || myTickets();
+  document.getElementById('tickets-count').textContent = `${list.length} ticket${list.length!==1?'s':''}`;
+  document.getElementById('tickets-tbody').innerHTML = list.map(t=>`<tr>
+    <td class="td-mono">${esc(t.id)}</td>
+    <td style="font-size:11px;color:var(--muted)">${esc(t.date)}</td>
+    <td class="td-bold">${esc(t.salonDisplay||t.salonCode)}</td>
+    <td><span class="b-cat">${esc(t.subtype)}</span></td>
+    <td style="font-size:12px">${esc(t.subject)}</td>
+    <td style="font-size:12px;color:var(--ink2)">${esc(t.raisedBy)}</td>
+    <td>${prioBadge(t.priority)}</td>
+    <td>${waitBadge(t.waitingSince)}</td>
+    <td style="font-size:11px;color:var(--muted)">${t.expectedDate?'📅 '+esc(t.expectedDate):'—'}</td>
+    <td style="font-size:11px;color:var(--muted);max-width:130px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(t.toRecipients||'')}</td>
+    <td>${statusBadge(t.status)}</td>
+    <td><button class="btn btn-ghost btn-xs" onclick="openQE('${esc(t.id)}')">Update</button></td>
+  </tr>`).join('') || `<tr><td colspan="12"><div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-text">No tickets match your filters.</div></div></td></tr>`;
+}
+
+// ══════════════════════════════════════════════════
+//  FILTERS
+// ══════════════════════════════════════════════════
+function applyF() {
+  const st=document.getElementById('f-st').value;
+  const ss=document.getElementById('f-status').value;
+  const sp=document.getElementById('f-prio').value;
+  const sq=document.getElementById('f-q').value.toLowerCase();
+  renderTicketsTable(myTickets().filter(t=>
+    (!st||t.subtype===st)&&(!ss||t.status===ss)&&(!sp||t.priority===sp)&&
+    (!sq||t.salonDisplay?.toLowerCase().includes(sq)||t.subject.toLowerCase().includes(sq)||t.subtype.toLowerCase().includes(sq)||(t.desc||'').toLowerCase().includes(sq))
+  ));
+}
+function clearF() {
+  ['f-st','f-status','f-prio'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-q').value='';
+  renderTicketsTable();
+}
+
+// ══════════════════════════════════════════════════
+//  FORM — BUILD DROPDOWNS
+// ══════════════════════════════════════════════════
+function buildFormDropdowns() {
+  // Center dropdown — filtered by role
+  let visibleSalons = masterSalons;
+  if (currentUser.role === 'salon') visibleSalons = masterSalons.filter(s=>s.name===currentUser.name);
+  else if (currentUser.role === 'am') visibleSalons = masterSalons.filter(s=>s.am===currentUser.name);
+  else if (currentUser.role === 'nsh') visibleSalons = masterSalons.filter(s=>s.nsh===currentUser.name);
+
+  const cSel = document.getElementById('nf-center');
+  cSel.innerHTML = '<option value="">Select Center</option>' + visibleSalons.map(s=>`<option value="${esc(s.name)}">${esc(s.display)} — ${esc(s.city)}</option>`).join('');
+
+  // Auto-select if salon role
+  if (currentUser.role === 'salon' && visibleSalons.length === 1) {
+    cSel.value = visibleSalons[0].name;
+    onCenterChange();
+  }
+
+  // Subject types
+  const types = [...new Set(subjCfg.map(r=>r.subtype))];
+  document.getElementById('nf-subtype').innerHTML = '<option value="">Select Subject Type</option>' + types.map(t=>`<option>${esc(t)}</option>`).join('');
+  document.getElementById('f-st').innerHTML = '<option value="">All Subject Types</option>' + types.map(t=>`<option>${esc(t)}</option>`).join('');
+  updateRoutingBox('');
+}
+
+function onCenterChange() {
+  const name = document.getElementById('nf-center').value;
+  const salon = masterSalons.find(s=>s.name===name);
+  if (!salon) { document.getElementById('salon-info-box').classList.add('hidden'); return; }
+  document.getElementById('af-nsh-v').textContent   = salon.nsh;
+  document.getElementById('af-nsh-e-v').textContent = salon.nshEmail;
+  document.getElementById('af-am-v').textContent    = salon.am;
+  document.getElementById('af-am-e-v').textContent  = salon.amEmail;
+  document.getElementById('af-salon-e-v').textContent = salon.salonEmail;
+  document.getElementById('af-brand-v').textContent = `${salon.brand} / ${salon.city}`;
+  document.getElementById('salon-info-box').classList.remove('hidden');
+  updateRoutingBox(document.getElementById('nf-subtype').value, salon);
+}
+
+function onSubtypeChange() {
+  const st = document.getElementById('nf-subtype').value;
+  const subs = subjCfg.filter(r=>r.subtype===st).map(r=>r.subject);
+  document.getElementById('nf-subject').innerHTML = '<option value="">Select Subject</option>' + subs.map(s=>`<option>${esc(s)}</option>`).join('');
+  document.getElementById('req-fields-wrap').classList.add('hidden');
+  document.getElementById('req-fields-grid').innerHTML='';
+  const sName = document.getElementById('nf-center').value;
+  const salon = masterSalons.find(s=>s.name===sName);
+  updateRoutingBox(st, salon||null);
+}
+
+function onSubjectChange() {
+  const st = document.getElementById('nf-subtype').value;
+  const sb = document.getElementById('nf-subject').value;
+  if (!st||!sb) { document.getElementById('req-fields-wrap').classList.add('hidden'); return; }
+  const row = subjCfg.find(r=>r.subtype===st&&r.subject===sb);
+  if (!row) { document.getElementById('req-fields-wrap').classList.add('hidden'); return; }
+
+  // Apply description hint placeholder if set
+  const descEl = document.getElementById('nf-desc');
+  if (descEl) descEl.placeholder = row.descHint || 'Describe the issue in full detail…';
+
+  const fields = row.fields.split(',').map(f=>f.trim()).filter(Boolean);
+  document.getElementById('req-fields-grid').innerHTML = fields.map(f=>{
+    const fid='rf-'+f.replace(/[^a-zA-Z0-9]/g,'_');
+    const fl=f.toLowerCase();
+    const isTA=fl.includes('detail')||fl.includes('reason')||fl.includes('other')||fl.includes('rectif');
+    const isDate=fl.includes('date')||fl.includes('termination');
+    const isFile=fl.includes('screenshot')||fl.includes('trail');
+    const isMandatory = row.mandatory==='Y';
+    const icon = isDate?'📅 ':isFile?'📎 ':'';
+    return `<div class="rfi${isTA?' full':''}">
+      <label class="rfi-lbl">${icon}${esc(f)}${isMandatory?' <span style="color:var(--red)">*</span>':''}</label>
+      ${isTA?`<textarea class="rfi-input" id="${fid}" rows="2" placeholder="${esc(f)}…"></textarea>`:
+        `<input class="rfi-input" id="${fid}" type="${isDate?'date':isFile?'url':'text'}" ${!isDate?`placeholder="${esc(f)}"`:''}>`}
+      ${isDate?`<div class="fhint">📅 Select from calendar</div>`:''}
+    </div>`;
+  }).join('');
+  document.getElementById('req-fields-wrap').classList[fields.length?'remove':'add']('hidden');
+}
+
+function updateRoutingBox(subtype, salon) {
+  const nshEmail  = salon?.nshEmail || (currentUser?.role==='nsh' ? currentUser.email : '[NSH Email]');
+  const amEmail   = salon?.amEmail  || '';
+  const ceoEmail  = emailCfg.ceoEmail  || '';
+  const itEmail   = emailCfg.itEmail   || '';
+  const bccEmail  = emailCfg.bccEmail  || '';
+
+  const toEmails  = [nshEmail, amEmail].filter(Boolean);
+  const ccEmails  = [ceoEmail, amEmail, itEmail].filter(Boolean);
+  const bccEmails = [bccEmail].filter(Boolean);
+
+  document.getElementById('to-pills').innerHTML = toEmails.map(e=>`<span class="rpill to">📧 ${esc(e)}</span>`).join('')
+    + `<input class="rpill-inp" placeholder="+ Add TO…">`;
+  document.getElementById('cc-pills').innerHTML = ccEmails.map(e=>`<span class="rpill cc">Cc: ${esc(e)}</span>`).join('')
+    + `<input class="rpill-inp" placeholder="+ Add CC…">`;
+
+  // BCC row
+  let bccRow = document.getElementById('bcc-pills-row');
+  if (!bccRow) {
+    const routingBox = document.getElementById('routing-box');
+    const bccDiv = document.createElement('div');
+    bccDiv.className='routing-row'; bccDiv.id='bcc-pills-row';
+    bccDiv.innerHTML=`<div class="rlbl" style="color:var(--muted)">BCC</div><div class="rpills" id="bcc-pills"></div>`;
+    routingBox.insertBefore(bccDiv, routingBox.querySelector('[style*="font-size:10.5px"]'));
+  }
+  const bccEl = document.getElementById('bcc-pills');
+  if (bccEl) bccEl.innerHTML = bccEmails.length
+    ? bccEmails.map(e=>`<span class="rpill" style="background:rgba(90,128,128,0.1);color:var(--muted);border:1px solid var(--br2)">Bcc: ${esc(e)}</span>`).join('')
+    : `<span style="font-size:11px;color:var(--muted);font-style:italic">Not configured — set in Admin → Email Config</span>`;
+}
+
+// ══════════════════════════════════════════════════
+//  FILE HANDLING
+// ══════════════════════════════════════════════════
+function handleFiles(files) {
+  Array.from(files).forEach(file => {
+    if (file.size > 5*1024*1024) { showToast(`${file.name} exceeds 5MB limit`,'err'); return; }
+    selectedFiles.push(file);
+  });
+  renderFilePreviews();
+}
+
+function renderFilePreviews() {
+  const wrap = document.getElementById('file-previews');
+  wrap.innerHTML = selectedFiles.map((f,i)=>{
+    const isImg = f.type.startsWith('image/');
+    if (isImg) {
+      const url = URL.createObjectURL(f);
+      return `<div class="file-thumb"><img src="${url}" alt="${esc(f.name)}"><button class="del-f" onclick="removeFile(${i})">×</button></div>`;
+    }
+    return `<div class="file-name-chip">📄 ${esc(f.name)} <button class="del-f" onclick="removeFile(${i})">×</button></div>`;
+  }).join('');
+}
+
+function removeFile(i) { selectedFiles.splice(i,1); renderFilePreviews(); }
+
+// Drag-drop
+const dz = document.getElementById('file-drop-zone');
+dz.addEventListener('dragover',e=>{e.preventDefault();dz.classList.add('drag');});
+dz.addEventListener('dragleave',()=>dz.classList.remove('drag'));
+dz.addEventListener('drop',e=>{e.preventDefault();dz.classList.remove('drag');handleFiles(e.dataTransfer.files);});
+
+// ══════════════════════════════════════════════════
+//  SUBMIT TICKET
+// ══════════════════════════════════════════════════
+function submitTicket() {
+  const salonCode   = document.getElementById('nf-center').value.trim();
+  const date        = document.getElementById('nf-date').value;
+  const waitingSince= document.getElementById('nf-wait').value;
+  const expectedDate= document.getElementById('nf-exp').value;
+  const raisedBy    = document.getElementById('nf-raised-by').value.trim();
+  const priority    = document.getElementById('nf-priority').value;
+  const subtype     = document.getElementById('nf-subtype').value;
+  const subject     = document.getElementById('nf-subject').value;
+  const desc        = document.getElementById('nf-desc').value.trim();
+
+  if (!salonCode||!date||!waitingSince||!raisedBy||!subtype||!subject||!desc) {
+    showToast('Please fill all required fields','err'); return;
+  }
+
+  const salon = masterSalons.find(s=>s.name===salonCode);
+  const row   = subjCfg.find(r=>r.subtype===subtype&&r.subject===subject);
+  const dynFields = {};
+  if (row) {
+    const flds = row.fields.split(',').map(f=>f.trim()).filter(Boolean);
+    let miss=false;
+    flds.forEach(f=>{
+      const el=document.getElementById('rf-'+f.replace(/[^a-zA-Z0-9]/g,'_'));
+      if (el){ dynFields[f]=el.value.trim(); if(row.mandatory==='Y'&&!dynFields[f])miss=true; }
+    });
+    if(miss){showToast('Fill all required subject fields','err');return;}
+  }
+
+  const nshEmail   = salon?.nshEmail||'';
+  const amEmail    = salon?.amEmail||'';
+  const salonEmail = salon?.salonEmail||'';
+  const ceoEmail   = emailCfg.ceoEmail  || '';
+  const itEmail    = emailCfg.itEmail   || '';
+  const bccEmail   = emailCfg.bccEmail  || '';
+  const toFinal    = [nshEmail, amEmail].filter(Boolean);
+  const ccFinal    = [ceoEmail, amEmail, itEmail].filter(Boolean);
+  const bccFinal   = [bccEmail].filter(Boolean);
+  const ccInp = document.getElementById('cc-pills').querySelector('input');
+  if (ccInp?.value.trim()) ccFinal.push(ccInp.value.trim());
+
+  // File names (base64 would need backend; we store names for now)
+  const fileNames = selectedFiles.map(f=>f.name);
+
+  const id = 'HD-'+String(allTickets.length+1).padStart(4,'0');
+  const ticket = {
+    id, date, waitingSince, expectedDate,
+    salonCode, salonDisplay: salon?.display||salonCode, salonEmail: salon?.salonEmail||'',
+    nsh: salon?.nsh||'', nshEmail, amName: salon?.am||'', amEmail,
+    raisedBy, priority, subtype, subject, desc,
+    dynFields, files: fileNames,
+    toRecipients: toFinal.join(', '), ccRecipients: ccFinal.join(', '), bccRecipients: bccFinal.join(', '),
+    status:'Open', remarks:'', lastUpdated:'', createdAt: new Date().toISOString()
+  };
+
+  allTickets.push(ticket);
+  saveTickets(); renderAll();
+  showToast(`✅ Ticket ${id} raised!`,'ok');
+  resetForm();
+  setTimeout(()=>goTo('tickets'),700);
+}
+
+function resetForm() {
+  ['nf-center','nf-subtype','nf-subject'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['nf-raised-by','nf-desc'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('nf-date').value=today();
+  document.getElementById('nf-wait').value=today();
+  document.getElementById('nf-exp').value='';
+  document.getElementById('nf-priority').value='Medium';
+  document.getElementById('req-fields-wrap').classList.add('hidden');
+  document.getElementById('req-fields-grid').innerHTML='';
+  document.getElementById('salon-info-box').classList.add('hidden');
+  selectedFiles=[]; renderFilePreviews();
+  updateRoutingBox('');
+  buildFormDropdowns();
+}
+
+// ══════════════════════════════════════════════════
+//  FOLLOW-UP
+// ══════════════════════════════════════════════════
+function renderFuList(q='') {
+  const list = myTickets().filter(t=>t.status!=='Resolved'&&(!q||t.id.toLowerCase().includes(q)||t.salonDisplay?.toLowerCase().includes(q)||t.subject.toLowerCase().includes(q)));
+  document.getElementById('fu-count').textContent=`(${list.length})`;
+  document.getElementById('fu-list').innerHTML=list.map(t=>`
+    <div class="fu-it ${selFuId===t.id?'sel':''}" onclick="selectFu('${esc(t.id)}')">
+      <div class="fu-it-id">${esc(t.id)}</div>
+      <div class="fu-it-name">${esc(t.salonDisplay||t.salonCode)}</div>
+      <div class="fu-it-meta">${esc(t.subtype)} · ${esc(t.subject)}</div>
+      <div style="margin-top:4px;display:flex;gap:5px">${statusBadge(t.status)} ${waitBadge(t.waitingSince)}</div>
+    </div>`).join('')||'<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No open tickets 🎉</div>';
+}
+function filterFu(q){renderFuList(q.toLowerCase());}
+
+function selectFu(id) {
+  selFuId=id; const t=allTickets.find(x=>x.id===id); if(!t) return;
+  renderFuList();
+  const dynRows=Object.entries(t.dynFields||{}).map(([k,v])=>`<div><div class="dml">${esc(k)}</div><div class="dmv">${esc(v)||'—'}</div></div>`).join('');
+  const fileLinks=t.files&&t.files.length?`<div class="dml" style="margin-top:8px">Attachments</div><div>${t.files.map(f=>`<span class="b-cat">📎 ${esc(f)}</span> `).join('')}</div>`:'';
+  const remarks=(t.remarks||'').split('\n').filter(Boolean).map(r=>`<div class="tl-item"><div class="tl-dot"></div><div class="tl-body"><div class="tl-meta">${esc((r.match(/\[([^\]]+)\]/)||['',''])[1])}</div><div class="tl-text">${esc(r.replace(/\[[^\]]+\]\s*/,''))}</div></div></div>`).join('');
+  document.getElementById('fu-detail').innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--br)">
+      <div><div style="font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)">${esc(t.id)}</div>
+        <div style="font-family:'Fraunces',serif;font-size:19px;font-weight:600;color:var(--accent);margin:2px 0">${esc(t.salonDisplay||t.salonCode)}</div>
+        <div style="font-size:12px;color:var(--muted)">${esc(t.subtype)} → ${esc(t.subject)}</div></div>
+      <div style="display:flex;gap:5px">${statusBadge(t.status)} ${prioBadge(t.priority)}</div>
+    </div>
+    <div class="dm-grid">
+      <div><div class="dml">Raised By</div><div class="dmv">${esc(t.raisedBy)}</div></div>
+      <div><div class="dml">Date</div><div class="dmv">${esc(t.date)}</div></div>
+      <div><div class="dml">⏳ Waiting Since</div><div class="dmv">${waitBadge(t.waitingSince)}</div></div>
+      <div><div class="dml">📅 Expected By</div><div class="dmv" style="color:var(--ylw)">${t.expectedDate?'📅 '+esc(t.expectedDate):'—'}</div></div>
+      <div><div class="dml">NSH</div><div class="dmv">${esc(t.nsh)} <span style="font-size:10px;color:var(--muted)">${esc(t.nshEmail)}</span></div></div>
+      <div><div class="dml">AM</div><div class="dmv">${esc(t.amName)} <span style="font-size:10px;color:var(--muted)">${esc(t.amEmail)}</span></div></div>
+      <div><div class="dml">TO</div><div class="dmv" style="font-size:11px;color:var(--muted)">${esc(t.toRecipients)}</div></div>
+      <div><div class="dml">CC</div><div class="dmv" style="font-size:11px;color:var(--muted)">${esc(t.ccRecipients)}</div></div>
+      ${dynRows}
+    </div>
+    ${fileLinks}
+    <div class="sum-box">${esc(t.desc)}</div>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);font-weight:700;margin-bottom:10px">Remarks Timeline</div>
+    <div>${remarks||'<p style="color:var(--muted);font-size:12.5px;margin-bottom:12px">No remarks yet.</p>'}</div>
+    <div class="divider"></div>
+    <div style="font-size:10px;text-transform:uppercase;letter-spacing:1.5px;color:var(--accent);font-weight:700;margin-bottom:10px">Add Follow-Up</div>
+    <div class="form-grid">
+      <div class="fg full"><label class="flbl">Update Status</label>
+        <select class="fc2" id="fu-st"><option ${t.status==='Open'?'selected':''}>Open</option><option ${t.status==='Pending'?'selected':''}>Pending</option><option>Resolved</option></select></div>
+      <div class="fg full"><label class="flbl">Remark</label>
+        <textarea class="fc2" id="fu-rmk" rows="3" placeholder="Action taken / next steps…"></textarea></div>
+      <div class="fg"><label class="flbl">Updated By</label>
+        <input class="fc2" id="fu-by" placeholder="Your name"></div>
+    </div>
+    <div style="margin-top:10px;display:flex;justify-content:flex-end">
+      <button class="btn btn-primary btn-sm" onclick="saveFuRmk('${esc(t.id)}')">Save Update →</button>
+    </div>`;
+}
+
+function saveFuRmk(id) {
+  const t=allTickets.find(x=>x.id===id); if(!t) return;
+  const status=document.getElementById('fu-st').value;
+  const rmk=document.getElementById('fu-rmk').value.trim();
+  const by=document.getElementById('fu-by').value.trim();
+
+  // Permission: Only NSH or CEO can approve (set to Pending from Open)
+  if (status==='Pending' && t.status==='Open') {
+    const canApprove = currentUser?.role==='nsh' || currentUser?.role==='ceo' || currentUser?.email===emailCfg.ceoEmail;
+    if (!canApprove) { showToast('⛔ Only NSH or CEO can approve tickets','err'); return; }
+  }
+  // Permission: Only IT Resolver (emailCfg.itEmail) or role=it can resolve/close
+  if (status==='Resolved') {
+    const canResolve = currentUser?.role==='it' || currentUser?.email===emailCfg.itEmail;
+    if (!canResolve) { showToast('⛔ Only the IT resolver (configured in Admin → Email Config) can resolve tickets','err'); return; }
+  }
+
+  t.status=status;
+  if(rmk){const stamp=`[${new Date().toLocaleString('en-IN')} — ${by||'Unknown'}]`;t.remarks=(t.remarks?t.remarks+'\n':'')+`${stamp} ${rmk}`;}
+  t.lastUpdated=new Date().toISOString();
+  saveTickets(); renderAll(); selectFu(id);
+  showToast('Updated!','ok');
+}
+
+// ══════════════════════════════════════════════════
+//  QUICK EDIT MODAL
+// ══════════════════════════════════════════════════
+function openQE(id) {
+  const t=allTickets.find(x=>x.id===id); if(!t) return;
+  editId=id;
+  document.getElementById('qe-title').textContent=`Update Ticket ${id}`;
+  document.getElementById('qe-sub').textContent=`${t.salonDisplay||t.salonCode} — ${t.subtype} → ${t.subject}`;
+  document.getElementById('qe-status').value=t.status;
+  document.getElementById('qe-remark').value='';
+  document.getElementById('qe-by').value='';
+  document.getElementById('qe-overlay').classList.add('open');
+}
+function closeModal(){document.getElementById('qe-overlay').classList.remove('open');editId=null;}
+function saveQE() {
+  const t=allTickets.find(x=>x.id===editId); if(!t) return;
+  const newStatus=document.getElementById('qe-status').value;
+
+  // Permission checks
+  if (newStatus==='Pending' && t.status==='Open') {
+    const canApprove = currentUser?.role==='nsh' || currentUser?.role==='ceo' || currentUser?.email===emailCfg.ceoEmail;
+    if (!canApprove) { showToast('⛔ Only NSH or CEO can approve tickets','err'); return; }
+  }
+  if (newStatus==='Resolved') {
+    const canResolve = currentUser?.role==='it' || currentUser?.email===emailCfg.itEmail;
+    if (!canResolve) { showToast('⛔ Only the IT resolver (configured in Admin → Email Config) can resolve tickets','err'); return; }
+  }
+
+  t.status=newStatus;
+  const rmk=document.getElementById('qe-remark').value.trim();
+  const by=document.getElementById('qe-by').value.trim();
+  if(rmk){const st=`[${new Date().toLocaleString('en-IN')} — ${by||'Unknown'}]`;t.remarks=(t.remarks?t.remarks+'\n':'')+`${st} ${rmk}`;}
+  t.lastUpdated=new Date().toISOString();
+  saveTickets(); renderAll(); closeModal();
+  showToast('Ticket updated!','ok');
+}
+document.getElementById('qe-overlay').addEventListener('click',function(e){if(e.target===this)closeModal();});
+
+// ══════════════════════════════════════════════════
+//  ADMIN
+// ══════════════════════════════════════════════════
+function renderAdminPage() {
+  renderTokenTable();
+  renderUsersMaster();
+  renderSalonMaster();
+  tfbRenderTypes();
+  tfbRenderRight();
+  tfbLoadToggles();
+  const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||''; };
+  set('cfg-ceo', emailCfg.ceoEmail);
+  set('cfg-it',  emailCfg.itEmail);
+  set('cfg-bcc', emailCfg.bccEmail);
+  set('cfg-dcc', emailCfg.defaultCC);
+  set('cfg-app', emailCfg.approval);
+  // Populate script URL field
+  const urlEl = document.getElementById('cfg-script-url');
+  if (urlEl) urlEl.value = localStorage.getItem('hdScriptUrl') || APPS_SCRIPT_URL;
+}
+
+function renderUsersMaster() {
+  document.getElementById('users-master-body').innerHTML = masterUsers.map((u,i)=>`<tr>
+    <td><input value="${esc(u.username)}" onchange="masterUsers[${i}].username=this.value.toLowerCase().replace(/\\s+/g,'')" placeholder="e.g. varun" style="width:110px"></td>
+    <td><input value="${esc(u.name)}" onchange="masterUsers[${i}].name=this.value" placeholder="Full name" style="width:110px"></td>
+    <td><input value="${esc(u.email)}" onchange="masterUsers[${i}].email=this.value" type="email" placeholder="email@biguineindia.com" style="width:180px"></td>
+    <td><select onchange="masterUsers[${i}].role=this.value" style="width:80px">
+      ${['admin','nsh','am','it','salon'].map(r=>`<option ${u.role===r?'selected':''}>${r}</option>`).join('')}
+    </select></td>
+    <td><input value="${esc(u.zone||'')}" onchange="masterUsers[${i}].zone=this.value" placeholder="West / South / CEO" style="width:100px"></td>
+    <td style="position:relative">
+      <input type="text" value="${esc(u.password||'helpdesk@123')}" onchange="masterUsers[${i}].password=this.value" id="upw-${i}" style="width:130px;font-family:'DM Mono',monospace;font-size:12px">
+      <button onclick="resetUserPw(${i})" title="Reset to default" style="margin-left:4px;background:none;border:1px solid var(--br2);border-radius:4px;cursor:pointer;font-size:10px;padding:3px 6px;color:var(--muted)">↺ Reset</button>
+    </td>
+    <td><button class="del-btn" onclick="delUser(${i})">🗑</button></td>
+  </tr>`).join('');
+}
+
+function addUserRow() {
+  masterUsers.push({username:'',name:'',email:'',role:'salon',zone:'',password:'helpdesk@123'});
+  renderUsersMaster();
+}
+
+function delUser(i) {
+  if(!confirm(`Remove user "${masterUsers[i].username}"?`)) return;
+  masterUsers.splice(i,1);
+  renderUsersMaster();
+  showToast('User removed','inf');
+}
+
+function resetUserPw(i) {
+  masterUsers[i].password = DEFAULT_PW;
+  // Also clear the stored custom pw so they're forced to reset on next login
+  const val = USER_DIRECTORY[masterUsers[i].username.toLowerCase().replace(/\s+/g,'')] || '';
+  if (val) localStorage.removeItem(pwKey(val));
+  renderUsersMaster();
+  showToast(`Password reset to default for ${masterUsers[i].username}`,'inf');
+}
+
+function saveUsers() {
+  // Validate
+  const usernames = masterUsers.map(u=>u.username.toLowerCase().replace(/\s+/g,''));
+  const dups = usernames.filter((u,i)=>u && usernames.indexOf(u)!==i);
+  if (dups.length) { showToast(`Duplicate username: ${dups[0]}`,'err'); return; }
+  if (masterUsers.some(u=>!u.username||!u.email)) { showToast('Username and Email are required for all users','err'); return; }
+
+  // Persist passwords into pwKey storage so login works immediately
+  masterUsers.forEach(u => {
+    const uname = u.username.toLowerCase().replace(/\s+/g,'');
+    let val = '';
+    if (u.role==='admin') val=`admin::${u.name}::${u.email}::`;
+    else if (u.role==='nsh') val=`nsh::${u.name}::${u.email}::${u.zone||''}`;
+    else if (u.role==='am')  val=`am::${u.name}::${u.email}::${u.zone||''}`;
+    else val=`salon::${u.name}::${u.email}::::::`;
+    if (u.password && val) localStorage.setItem(pwKey(val), u.password);
+  });
+
+  localStorage.setItem('masterUsers', JSON.stringify(masterUsers));
+  buildUserDirectory();
+  syncUsersToSheets();
+  showToast('✅ Users saved & synced to Sheet!','ok');
+}
+
+function renderSalonMaster() {
+  document.getElementById('salon-master-body').innerHTML = masterSalons.map((s,i)=>`<tr>
+    <td><input value="${esc(s.name)}" onchange="masterSalons[${i}].name=this.value"></td>
+    <td><input value="${esc(s.display)}" onchange="masterSalons[${i}].display=this.value"></td>
+    <td><input value="${esc(s.brand)}" onchange="masterSalons[${i}].brand=this.value"></td>
+    <td><input value="${esc(s.sub)}" onchange="masterSalons[${i}].sub=this.value"></td>
+    <td><input value="${esc(s.city)}" onchange="masterSalons[${i}].city=this.value"></td>
+    <td><input value="${esc(s.zone)}" onchange="masterSalons[${i}].zone=this.value"></td>
+    <td><input value="${esc(s.nsh)}" onchange="masterSalons[${i}].nsh=this.value"></td>
+    <td><input value="${esc(s.am)}" onchange="masterSalons[${i}].am=this.value"></td>
+    <td><input value="${esc(s.salonEmail)}" onchange="masterSalons[${i}].salonEmail=this.value" type="email"></td>
+    <td><input value="${esc(s.amEmail)}" onchange="masterSalons[${i}].amEmail=this.value" type="email"></td>
+    <td><input value="${esc(s.nshEmail)}" onchange="masterSalons[${i}].nshEmail=this.value" type="email"></td>
+    <td><input value="${esc(s.hr||'')}" onchange="masterSalons[${i}].hr=this.value"></td>
+    <td><button class="del-btn" onclick="delSalon(${i})">🗑</button></td>
+  </tr>`).join('');
+}
+
+function addSalonRow() { masterSalons.push({name:'',display:'',brand:'',sub:'',city:'',zone:'',nsh:'',am:'',salonEmail:'',amEmail:'',nshEmail:'',hr:''}); renderSalonMaster(); }
+function delSalon(i) { masterSalons.splice(i,1); renderSalonMaster(); showToast('Removed','inf'); }
+function saveMaster() {
+  localStorage.setItem('masterSalons', JSON.stringify(masterSalons));
+  buildUserDirectory(); buildLoginDropdowns(); buildFormDropdowns();
+  showToast('✅ Master data saved!','ok');
+}
+
+async function pushSalonsToSheet() {
+  showToast('Pushing salons to Sheet…','inf');
+  await sheetsPost({action:'syncSalons', salons: masterSalons});
+  showToast(`✅ ${masterSalons.length} salons pushed to Sheet!`,'ok');
+}
+
+// ── Push ALL local data → Google Sheet ──
+async function pushAllToSheet() {
+  showToast('Pushing all data to Sheet… please wait','inf');
+  try {
+    await sheetsPost({action:'syncUsers',   users:   masterUsers});
+    await sheetsPost({action:'syncSalons',  salons:  masterSalons});
+    await sheetsPost({action:'syncTickets', tickets: allTickets});
+    // Tokens
+    const tokenMap = getTokenMap();
+    if (Object.keys(tokenMap).length) {
+      await sheetsPost({action:'syncTokens', tokens: tokenMap});
+    }
+    showToast(`✅ All data pushed! Users: ${masterUsers.length} · Salons: ${masterSalons.length} · Tickets: ${allTickets.length}`,'ok');
+  } catch(e) {
+    showToast('❌ Push failed — check Apps Script URL','err');
+    console.error(e);
+  }
+}
+
+// ── Pull ALL data ← Google Sheet ──
+async function pullAllFromSheet() {
+  showToast('Pulling all data from Sheet…','inf');
+  try {
+    const [uData, sData, tData, tokData] = await Promise.all([
+      sheetsGet({action:'getUsers'}),
+      sheetsGet({action:'getSalons'}),
+      sheetsGet({action:'getTickets'}),
+      sheetsGet({action:'getTokens'}),
+    ]);
+    if (uData?.users?.length)   { masterUsers  = uData.users;   localStorage.setItem('masterUsers',  JSON.stringify(masterUsers));  buildUserDirectory(); }
+    if (sData?.salons?.length)  { masterSalons = sData.salons;  localStorage.setItem('masterSalons', JSON.stringify(masterSalons)); buildFormDropdowns(); }
+    if (tData?.tickets?.length) { allTickets   = tData.tickets; localStorage.setItem('hdTickets',    JSON.stringify(allTickets));   renderAll(); }
+    if (tokData?.tokens) {
+      const existing = getTokenMap();
+      saveTokenMap(Object.assign(existing, tokData.tokens));
+    }
+    renderAdminPage();
+    showToast(`✅ Pulled from Sheet! Users: ${masterUsers.length} · Salons: ${masterSalons.length} · Tickets: ${allTickets.length}`,'ok');
+  } catch(e) {
+    showToast('❌ Pull failed — check Apps Script URL','err');
+    console.error(e);
+  }
+}
+function saveEmailCfg() {
+  emailCfg = {
+    ceoEmail:  (document.getElementById('cfg-ceo')?.value||'').trim(),
+    itEmail:   (document.getElementById('cfg-it')?.value||'').trim(),
+    bccEmail:  (document.getElementById('cfg-bcc')?.value||'').trim(),
+    defaultCC: (document.getElementById('cfg-dcc')?.value||'').trim(),
+    approval:  (document.getElementById('cfg-app')?.value||'').trim(),
+  };
+  localStorage.setItem('emailCfg', JSON.stringify(emailCfg));
+  showToast('✅ Email config saved!','ok');
+}
+
+// ══════════════════════════════════════════════════
+//  TICKET FORM BUILDER (TFB)
+// ══════════════════════════════════════════════════
+let tfbSelectedType = null;
+
+// Form section toggles — persisted
+const TFB_TOGGLES_KEY = 'tfbToggles';
+function tfbLoadToggles() {
+  const saved = JSON.parse(localStorage.getItem(TFB_TOGGLES_KEY)||'{}');
+  const ids = ['tfb-show-basic','tfb-show-salon','tfb-show-subject','tfb-show-desc','tfb-show-attach','tfb-show-routing'];
+  ids.forEach(id => {
+    const el = document.getElementById(id); if(!el) return;
+    el.checked = saved[id] !== false; // default true
+  });
+  tfbApplyToggles();
+}
+function tfbSaveToggles() {
+  const ids = ['tfb-show-basic','tfb-show-salon','tfb-show-subject','tfb-show-desc','tfb-show-attach','tfb-show-routing'];
+  const obj = {};
+  ids.forEach(id => { const el=document.getElementById(id); if(el) obj[id]=el.checked; });
+  localStorage.setItem(TFB_TOGGLES_KEY, JSON.stringify(obj));
+  tfbApplyToggles();
+}
+function tfbApplyToggles() {
+  const map = {
+    'tfb-show-basic':    '.form-section:has(#nf-center)',
+    'tfb-show-salon':    '#salon-info-box',
+    'tfb-show-subject':  '.form-section:has(#nf-subtype)',
+    'tfb-show-desc':     '.form-section:has(#nf-desc)',
+    'tfb-show-attach':   '.form-section:has(#file-drop-zone)',
+    'tfb-show-routing':  '#routing-box',
+  };
+  Object.entries(map).forEach(([id, sel]) => {
+    const chk = document.getElementById(id); if(!chk) return;
+    document.querySelectorAll(sel).forEach(el => {
+      el.style.display = chk.checked ? '' : 'none';
+    });
+  });
+}
+
+// Get unique subject types from subjCfg
+function tfbGetTypes() {
+  const seen = new Set();
+  return subjCfg.filter(r => { if(seen.has(r.subtype)) return false; seen.add(r.subtype); return true; }).map(r=>r.subtype);
+}
+
+// Get subjects for a given type
+function tfbGetSubjects(type) {
+  return subjCfg.filter(r => r.subtype === type);
+}
+
+// Render left panel — type list
+function tfbRenderTypes() {
+  const types = tfbGetTypes();
+  const el = document.getElementById('tfb-type-list'); if(!el) return;
+  el.innerHTML = types.map((t,i) => `
+    <div class="tfb-type-item${tfbSelectedType===t?' active':''}" data-tfb-idx="${i}" style="cursor:pointer">
+      <span class="tfb-type-name">${esc(t)}</span>
+      <button class="tfb-type-del" data-tfb-del="${i}" title="Delete type">🗑</button>
+    </div>
+  `).join('') + `<div style="padding:6px 4px"><button class="btn btn-ghost btn-xs" style="width:100%" onclick="tfbAddType()">＋ Add Subject Type</button></div>`;
+
+  // Attach events via JS (avoids quoting issues with special chars in type names)
+  el.querySelectorAll('.tfb-type-item').forEach(item => {
+    const idx = parseInt(item.dataset.tfbIdx);
+    const type = types[idx];
+    item.addEventListener('click', () => tfbSelectType(type));
+    const delBtn = item.querySelector('.tfb-type-del');
+    if (delBtn) delBtn.addEventListener('click', e => { e.stopPropagation(); tfbDelType(type); });
+  });
+}
+
+// Select a type → render right panel
+function tfbSelectType(type) {
+  tfbSelectedType = type;
+  tfbRenderTypes();
+  tfbRenderRight();
+  // Show the sticky save bar
+  const bar = document.getElementById('tfb-save-bar');
+  if (bar) bar.style.display = 'flex';
+}
+
+// Render right panel — subjects + fields editor
+function tfbRenderRight() {
+  const hdr = document.getElementById('tfb-right-header');
+  const body = document.getElementById('tfb-right-body');
+  if (!tfbSelectedType) { body.innerHTML='<div style="color:var(--muted);font-size:13px;padding:40px 0;text-align:center">Select a subject type from the left panel.</div>'; return; }
+
+  const subjects = tfbGetSubjects(tfbSelectedType);
+
+  hdr.innerHTML = `
+    <div>
+      <span style="font-size:12px;font-weight:700;color:var(--ink2)">✏️ Editing: </span>
+      <input id="tfb-type-rename" value="${esc(tfbSelectedType)}" style="border:none;background:none;font-size:14px;font-weight:700;color:var(--accent);outline:none;font-family:'Outfit',sans-serif;min-width:200px">
+    </div>
+    <button class="btn btn-ghost btn-sm" onclick="tfbAddSubject()">＋ Add Subject</button>
+  `;
+  // Attach rename event via JS
+  const ri = document.getElementById('tfb-type-rename');
+  if (ri) {
+    ri.addEventListener('blur', () => tfbRenameType(ri.value));
+    ri.addEventListener('keydown', e => { if(e.key==='Enter') ri.blur(); });
+  }
+
+  body.innerHTML = subjects.length === 0
+    ? `<div style="color:var(--muted);font-size:13px;padding:30px 0;text-align:center">No subjects yet. Click <strong>+ Add Subject</strong> to begin.</div>`
+    : subjects.map((s, localIdx) => {
+        const globalIdx = subjCfg.indexOf(s);
+        const fields = (s.fields||'').split(',').map(f=>f.trim()).filter(Boolean);
+        return `
+        <div class="tfb-subj-row" id="tfb-subj-${globalIdx}">
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Subject Name</div>
+            <input class="tfb-desc-field" style="min-height:0;resize:none" value="${esc(s.subject)}"
+              onchange="subjCfg[${globalIdx}].subject=this.value" placeholder="Subject name">
+          </div>
+          <div>
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:4px">Issue Description Hint</div>
+            <textarea class="tfb-desc-field" rows="2" onchange="subjCfg[${globalIdx}].descHint=this.value" placeholder="Placeholder text shown in description box…">${esc(s.descHint||'')}</textarea>
+          </div>
+          <button class="del-btn" style="margin-top:18px" onclick="tfbDelSubject(${globalIdx})" title="Delete subject">🗑</button>
+
+          <!-- Required fields -->
+          <div style="grid-column:1/-1">
+            <div style="font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px">Required Fields</div>
+            <div class="tfb-field-chips" id="chips-${globalIdx}">
+              ${fields.map((f,fi)=>`
+                <span class="tfb-chip">
+                  ${esc(f)}
+                  <button class="tfb-chip-del" onclick="tfbDelField(${globalIdx},${fi})" title="Remove">✕</button>
+                </span>`).join('')}
+            </div>
+            <div class="tfb-add-field">
+              <input id="new-field-${globalIdx}" placeholder="Add a required field…" onkeydown="if(event.key==='Enter'){tfbAddField(${globalIdx});event.preventDefault();}">
+              <button class="btn btn-ghost btn-xs" onclick="tfbAddField(${globalIdx})">＋ Add</button>
+            </div>
+            <label class="tfb-mandatory-chk">
+              <input type="checkbox" ${s.mandatory==='Y'?'checked':''} onchange="subjCfg[${globalIdx}].mandatory=this.checked?'Y':'N'">
+              Fields are mandatory (cannot submit without filling)
+            </label>
+          </div>
+        </div>`;
+      }).join('');
+}
+
+// Add new subject type
+function tfbAddType() {
+  const name = prompt('New Subject Type name:','');
+  if (!name || !name.trim()) return;
+  const t = name.trim();
+  if (tfbGetTypes().includes(t)) { showToast('Subject type already exists','err'); return; }
+  subjCfg.push({subtype:t, subject:'New Subject', descHint:'', fields:'', mandatory:'Y'});
+  tfbSelectedType = t;
+  tfbRenderTypes();
+  tfbRenderRight();
+}
+
+// Delete type + all its subjects
+function tfbDelType(type) {
+  if (!confirm(`Delete "${type}" and all its subjects?`)) return;
+  subjCfg = subjCfg.filter(r => r.subtype !== type);
+  if (tfbSelectedType === type) tfbSelectedType = null;
+  tfbRenderTypes();
+  tfbRenderRight();
+  showToast('Subject type deleted','inf');
+}
+
+// Rename type
+function tfbRenameType(newName) {
+  if (!newName.trim() || newName.trim() === tfbSelectedType) return;
+  const old = tfbSelectedType;
+  subjCfg.forEach(r => { if(r.subtype===old) r.subtype=newName.trim(); });
+  tfbSelectedType = newName.trim();
+  tfbRenderTypes();
+}
+
+// Add subject to current type
+function tfbAddSubject() {
+  if (!tfbSelectedType) return;
+  subjCfg.push({subtype:tfbSelectedType, subject:'New Subject', descHint:'', fields:'', mandatory:'Y'});
+  tfbRenderRight();
+  showToast('Subject added','ok');
+}
+
+// Delete a subject row
+function tfbDelSubject(idx) {
+  if (!confirm(`Delete subject "${subjCfg[idx].subject}"?`)) return;
+  subjCfg.splice(idx,1);
+  tfbRenderRight();
+  showToast('Subject deleted','inf');
+}
+
+// Add a field chip
+function tfbAddField(idx) {
+  const inp = document.getElementById(`new-field-${idx}`); if(!inp) return;
+  const val = inp.value.trim(); if(!val) return;
+  const current = (subjCfg[idx].fields||'').split(',').map(f=>f.trim()).filter(Boolean);
+  if (current.includes(val)) { showToast('Field already added','err'); return; }
+  current.push(val);
+  subjCfg[idx].fields = current.join(',');
+  inp.value = '';
+  tfbRenderRight();
+}
+
+// Delete a field chip
+function tfbDelField(idx, fi) {
+  const fields = (subjCfg[idx].fields||'').split(',').map(f=>f.trim()).filter(Boolean);
+  fields.splice(fi,1);
+  subjCfg[idx].fields = fields.join(',');
+  tfbRenderRight();
+}
+
+// Save everything
+function tfbSave() {
+  localStorage.setItem('subjCfg', JSON.stringify(subjCfg));
+  tfbSaveToggles();
+  buildFormDropdowns();
+  showToast('✅ Ticket form saved!','ok');
+}
+
+function resetSubjCfg(){if(!confirm('Reset all subjects to default? This cannot be undone.'))return;subjCfg=[...DEFAULT_SUBJ_CFG];localStorage.removeItem('subjCfg');tfbSelectedType=null;tfbRenderTypes();tfbRenderRight();buildFormDropdowns();showToast('Reset to defaults','inf');}
+function addSubjRow()  { if(!tfbSelectedType) { showToast('Select a subject type first','err'); return; } tfbAddSubject(); }
+function delSubj(i)    { tfbDelSubject(i); }
+function renderSubjCfg(){ tfbRenderTypes(); tfbRenderRight(); }
+
+// ══════════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════════
+function goTo(view) {
+  ['dashboard','tickets','new-ticket','followup','admin'].forEach(v=>{document.getElementById('view-'+v).classList.add('hidden');});
+  document.getElementById('view-'+view).classList.remove('hidden');
+  document.querySelectorAll('.nav-it,.tab').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll(`[data-view="${view}"]`).forEach(el=>el.classList.add('active'));
+  document.querySelectorAll(`[data-tab="${view}"]`).forEach(el=>el.classList.add('active'));
+  const titles={dashboard:['Dashboard','Overview of your help desk'],tickets:['All Tickets','Filter and manage tickets'],'new-ticket':['Raise New Ticket','Submit a new support ticket'],followup:['Follow-Up Tracker','Update open tickets'],admin:['Admin & Customise','Manage master data and configuration']};
+  const t=titles[view]||['Help Desk',''];
+  document.getElementById('page-title').textContent=t[0];
+  document.getElementById('page-sub').textContent=t[1];
+  if(view==='admin'){renderAdminPage(); document.getElementById('tfb-fab').style.display='block';}
+  else { document.getElementById('tfb-fab').style.display='none'; }
+  if(view==='new-ticket'){document.getElementById('nf-date').value=today();document.getElementById('nf-wait').value=today();}
+}
+
+// ══════════════════════════════════════════════════
+//  EXPORT
+// ══════════════════════════════════════════════════
+function exportCSV() {
+  const tickets=myTickets();
+  const h=['ID','Date','Salon','Subject Type','Subject','Raised By','Priority','Waiting Since','Expected Date','TO','CC','Status','Description','Remarks'];
+  const rows=tickets.map(t=>[t.id,t.date,t.salonDisplay,t.subtype,t.subject,t.raisedBy,t.priority,t.waitingSince||'',t.expectedDate||'',t.toRecipients,t.ccRecipients,t.status,t.desc,t.remarks].map(v=>`"${(v||'').replace(/"/g,'""')}"`));
+  const csv=[h.map(x=>`"${x}"`).join(','),...rows.map(r=>r.join(','))].join('\r\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob(['\uFEFF'+csv],{type:'text/csv'}));a.download=`helpdesk_${today()}.csv`;a.click();
+  showToast('Exported!','ok');
+}
+function refreshAll(){pullAllFromSheet();}
+
+// ══════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════
+function today(){return new Date().toISOString().slice(0,10);}
+function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+function updateOpenBadge(){document.getElementById('open-badge').textContent=myTickets().filter(t=>t.status==='Open').length;}
+function showToast(msg,type='ok'){const t=document.getElementById('toast');document.getElementById('toast-txt').textContent=msg;t.className=`toast show ${type}`;clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3500);}
+function statusBadge(s){if(s==='Open')return`<span class="badge b-open"><span class="bdot"></span>Open</span>`;if(s==='Pending')return`<span class="badge b-pend"><span class="bdot"></span>Pending</span>`;return`<span class="badge b-res"><span class="bdot"></span>Resolved</span>`;}
+function prioBadge(p){if(p==='High')return`<span class="b-hi">HIGH</span>`;if(p==='Low')return`<span class="b-lo">LOW</span>`;return`<span class="b-med">MED</span>`;}
+function waitBadge(d){if(!d)return'<span style="color:var(--muted);font-size:11px">—</span>';const days=Math.floor((new Date()-new Date(d))/86400000);const cls=days>=7?'waiting-crit':days>=3?'waiting-warn':'waiting-ok';return`<span class="${cls}">⏳ ${esc(d)} <span style="font-size:10px;opacity:.8">(${days}d)</span></span>`;}
+function getSample(){return[
+  {id:'HD-0001',date:'2025-05-10',waitingSince:'2025-05-10',expectedDate:'2025-05-17',salonCode:'AUNDH',salonDisplay:'Jcb Aundh',salonEmail:'aundh.pune@biguineindia.com',nsh:'Varun',nshEmail:'varun.marwah@biguineindia.com',amName:'Kishore',amEmail:'kishore.pai@biguineindia.com',raisedBy:'Salon Manager',priority:'High',subtype:'Bill Close Request from backend',subject:'OTP Issue',desc:'Guest unable to receive OTP, bill stuck open at counter.',dynFields:{'Center Name':'Aundh','Screenshot':'Attached'},files:[],toRecipients:'varun.marwah@biguineindia.com, kishore.pai@biguineindia.com',ccRecipients:'aundh.pune@biguineindia.com',status:'Open',remarks:'',lastUpdated:'',createdAt:'2025-05-10T10:00:00Z'},
+  {id:'HD-0002',date:'2025-05-12',waitingSince:'2025-05-12',expectedDate:'2025-05-19',salonCode:'BOUNCE LAVELLE ROAD',salonDisplay:'Bounce Lavelle Road',salonEmail:'bouncestyleloungeblr@gmail.com',nsh:'Abhishek',nshEmail:'abhishek.saran@biguineindia.com',amName:'Mansi',amEmail:'mansi@spalon.in',raisedBy:'Manager',priority:'Medium',subtype:'Refund request',subject:'Refund request',desc:'Guest requesting refund for cancelled colour service.',dynFields:{'Invoice No':'INV-2241','Center Name':'Lavelle Road','Reason':'Service not rendered','Approval':'Pending'},files:[],toRecipients:'abhishek.saran@biguineindia.com, mansi@spalon.in',ccRecipients:'bouncestyleloungeblr@gmail.com',status:'Pending',remarks:'[12-May-2025 15:00 — Mansi]: Sent to accounts for review.',lastUpdated:'2025-05-12T15:00:00Z',createdAt:'2025-05-12T11:00:00Z'},
+];}
+
+// ══════════════════════════════════════════════════
+//  BOOT
+// ══════════════════════════════════════════════════
+buildUserDirectory();
+buildLoginDropdowns();
+
+// ── 1. Check for ?token= in URL (magic link login) ──
+checkUrlToken().then(loggedInByToken => {
+  if (loggedInByToken) return; // already handled
+
+  // ── 2. Restore saved session (only if NOT on default password) ──
+  const savedUser    = localStorage.getItem('hdUser');
+  const savedUserVal = localStorage.getItem('hdUserVal');
+  const tokenLogin   = localStorage.getItem('hdTokenLogin'); // logged in via link
+
+  if (savedUser && savedUserVal) {
+    if (tokenLogin) {
+      // Token session — skip pw check, just restore
+      try { currentUser = JSON.parse(savedUser); startApp(); } catch(e) { doLogout(); }
+    } else {
+      const storedPwCheck = localStorage.getItem(pwKey(savedUserVal));
+      if (storedPwCheck && storedPwCheck !== DEFAULT_PW) {
+        try { currentUser = JSON.parse(savedUser); startApp(); } catch(e) { doLogout(); }
+      } else {
+        localStorage.removeItem('hdUser');
+        localStorage.removeItem('hdUserVal');
+      }
+    }
+  }
+});
+</script>
+</body>
+</html>
